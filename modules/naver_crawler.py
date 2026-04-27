@@ -18,10 +18,18 @@ CURRENT_YEAR = datetime.now().year
 
 # 네이버 부동산 API 헤더 (브라우저 흉내)
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Referer":    "https://new.land.naver.com/",
+    "User-Agent": "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+    "Referer":    "https://new.land.naver.com/apartments",
     "Accept":     "application/json, text/plain, */*",
-    "Accept-Language": "ko-KR,ko;q=0.9",
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "sec-ch-ua": '"Not_A Brand";v="8", "Chromium";v="120"',
+    "sec-ch-ua-mobile": "?1",
+    "sec-ch-ua-platform": '"Android"',
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
 }
 
 # 네이버 부동산 지역코드 (법정동코드 앞 5자리)
@@ -77,8 +85,7 @@ def _parse_price(price_str: str) -> int:
 
 
 def _random_delay():
-    """차단 방지 랜덤 딜레이"""
-    time.sleep(random.uniform(0.5, 1.5))
+    time.sleep(random.uniform(2.0, 4.0))
 
 
 def fetch_naver_listings(district: str, trade_type: str) -> list[dict]:
