@@ -19,7 +19,7 @@ from modules.db import (
     get_today_ai_calls, save_price_history, save_jeonse_ratio
 )
 from modules.data_collector import collect_all, collect_watchlist_prices
-from modules.zigbang_crawler import collect_zigbang_all
+from modules.zigbang_playwright import collect_zigbang_all
 from modules.scorer import run_scoring, fraud_risk
 from modules.kakao_analyzer import analyze_location
 from modules.official_price import get_official_price, check_hug_eligibility
