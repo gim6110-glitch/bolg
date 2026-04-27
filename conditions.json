@@ -1,0 +1,98 @@
+{
+  "jeonse": {
+    "max_price": 250000000,
+    "min_area": 56,
+    "max_area": 62,
+    "max_age_years": 10,
+    "target_move_in": "2025-09",
+    "subway_walk_max_min": 10,
+    "jeonse_ratio_max": 80,
+    "alert_min_score": 70,
+    "exclude_floor_1": false,
+    "exclude_floor_top": false
+  },
+  "sale": {
+    "max_price": 600000000,
+    "min_area": 81,
+    "max_area": 87,
+    "max_age_years": 10,
+    "target_dates": ["2026-09", "2027-09"],
+    "alert_min_score_priority": 70,
+    "alert_min_score_others": 80
+  },
+  "priority_areas": {
+    "sale": [
+      "반석동", "관저동", "노은동", "지족동", "도안동",
+      "나성동", "보람동", "새롬동", "도담동", "아름동",
+      "종촌동", "고운동", "소담동", "어진동", "다정동"
+    ],
+    "jeonse": []
+  },
+  "watchlist": [],
+  "alert": {
+    "important_score": 85,
+    "normal_hour": 19,
+    "quiet_start": 22,
+    "quiet_end": 7
+  },
+  "regions": {
+    "daejeon": {
+      "name": "대전",
+      "code": "30",
+      "districts": {
+        "유성구": "30200",
+        "서구":   "30170",
+        "중구":   "30110",
+        "동구":   "30140",
+        "대덕구": "30230"
+      }
+    },
+    "sejong": {
+      "name": "세종",
+      "code": "36",
+      "districts": {
+        "세종시": "36110"
+      }
+    },
+    "seoul": {
+      "name": "서울",
+      "code": "11",
+      "districts": {
+        "마포구":   "11440",
+        "성동구":   "11200",
+        "동작구":   "11590",
+        "영등포구": "11560",
+        "강서구":   "11500"
+      },
+      "monitor_only": true
+    }
+  },
+  "daejeon_subway": {
+    "line1_stations": [
+      {"name": "판암역",   "lat": 36.3196, "lng": 127.4544},
+      {"name": "신흥역",   "lat": 36.3231, "lng": 127.4469},
+      {"name": "대동역",   "lat": 36.3265, "lng": 127.4393},
+      {"name": "대전역",   "lat": 36.3325, "lng": 127.4344},
+      {"name": "중앙로역", "lat": 36.3264, "lng": 127.4268},
+      {"name": "중구청역", "lat": 36.3219, "lng": 127.4190},
+      {"name": "서대전네거리역", "lat": 36.3185, "lng": 127.4099},
+      {"name": "오룡역",   "lat": 36.3157, "lng": 127.3994},
+      {"name": "용문역",   "lat": 36.3188, "lng": 127.3886},
+      {"name": "탄방역",   "lat": 36.3219, "lng": 127.3794},
+      {"name": "시청역",   "lat": 36.3219, "lng": 127.3691},
+      {"name": "정부청사역","lat": 36.3604, "lng": 127.3489},
+      {"name": "갈마역",   "lat": 36.3489, "lng": 127.3703},
+      {"name": "월평역",   "lat": 36.3577, "lng": 127.3763},
+      {"name": "갑천역",   "lat": 36.3649, "lng": 127.3805},
+      {"name": "유성온천역","lat": 36.3622, "lng": 127.3562},
+      {"name": "구암역",   "lat": 36.3730, "lng": 127.3524},
+      {"name": "현충원역", "lat": 36.3800, "lng": 127.3484},
+      {"name": "반석역",   "lat": 36.3897, "lng": 127.3365}
+    ]
+  },
+  "key_hospitals": [
+    {"name": "충남대병원 산부인과",  "lat": 36.3663, "lng": 127.3634},
+    {"name": "을지대병원 산부인과",  "lat": 36.3476, "lng": 127.3848},
+    {"name": "건양대병원 산부인과",  "lat": 36.3097, "lng": 127.3747}
+  ]
+}
