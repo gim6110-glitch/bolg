@@ -19,6 +19,7 @@ from modules.db import (
     get_today_ai_calls, save_price_history, save_jeonse_ratio
 )
 from modules.data_collector import collect_all, collect_watchlist_prices
+from modules.naver_crawler import collect_naver_all
 from modules.scorer import run_scoring, fraud_risk
 from modules.kakao_analyzer import analyze_location
 from modules.official_price import get_official_price, check_hug_eligibility
@@ -148,7 +149,7 @@ async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_scan(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send("전체 매물 스캔 중... (2~3분 소요)")
     try:
-        raw      = collect_all(months=2)
+        raw      = collect_naver_all("both")
         jeonse_s = run_scoring(raw["jeonse"], fetch_location=True)
         sale_s   = run_scoring(raw["sale"],   fetch_location=True)
 
@@ -205,7 +206,7 @@ async def cmd_scan(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_jeonse(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send("전세 매물 검색 중...")
     try:
-        raw    = collect_all(months=2)
+        raw    = collect_naver_all("both")
         scored = run_scoring(raw["jeonse"], fetch_location=True)
         cfg    = load_cfg()
         j_min  = cfg["jeonse"]["alert_min_score"]
@@ -232,7 +233,7 @@ async def cmd_jeonse(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_sale(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send("매매 매물 검색 중...")
     try:
-        raw    = collect_all(months=2)
+        raw    = collect_naver_all("both")
         scored = run_scoring(raw["sale"], fetch_location=True)
         cfg    = load_cfg()
         top    = sorted(scored, key=lambda x: x["score"], reverse=True)[:8]
@@ -255,7 +256,7 @@ async def cmd_sale(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_fraud(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send("전세사기 위험 분석 중...")
     try:
-        raw        = collect_all(months=2)
+        raw        = collect_naver_all("both")
         jeonse_map = {i.get("name",""): i for i in raw["jeonse"]}
         sale_map   = {i.get("name",""): i for i in raw["sale"]}
 
@@ -408,7 +409,7 @@ async def cmd_compare(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     r1, r2 = ctx.args[0], ctx.args[1]
     await send(f"{r1} vs {r2} 비교 분석 중...")
     try:
-        raw    = collect_all(months=2)
+        raw    = collect_naver_all("both")
         all_s  = run_scoring(raw["jeonse"] + raw["sale"], fetch_location=False)
 
         def stats(items, region):
@@ -446,7 +447,7 @@ async def cmd_compare(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def cmd_report(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send("주간 리포트 생성 중... (AI 분석)")
     try:
-        raw   = collect_all(months=1)
+        raw   = collect_naver_all("both")
         stats = {}
         for item in raw["jeonse"] + raw["sale"]:
             d = item.get("district", "기타")
@@ -508,7 +509,7 @@ async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def daily_scan(ctx: ContextTypes.DEFAULT_TYPE):
     log.info("일일 스캔 시작")
     try:
-        raw     = collect_all(months=1)
+        raw     = collect_naver_all("both")
         jeonse  = run_scoring(raw["jeonse"], fetch_location=True)
         sale    = run_scoring(raw["sale"],   fetch_location=True)
         cfg     = load_cfg()
@@ -569,7 +570,7 @@ async def weekly_report_task(ctx: ContextTypes.DEFAULT_TYPE):
         return
     log.info("주간 리포트 시작")
     try:
-        raw   = collect_all(months=1)
+        raw   = collect_naver_all("both")
         stats = {}
         for item in raw["jeonse"] + raw["sale"]:
             d = item.get("district","기타")
