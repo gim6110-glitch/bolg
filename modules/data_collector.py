@@ -60,7 +60,7 @@ def _get_year_months(months: int) -> list[str]:
 
 def fetch_jeonse(district_code: str, year_month: str) -> list[dict]:
     """국토부 아파트 전월세 자료 조회"""
-    url = "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptRent"
+    url = "https://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent"
     params = {
         "serviceKey": MOLIT_KEY,
         "LAWD_CD":    district_code,
@@ -117,7 +117,7 @@ def fetch_jeonse(district_code: str, year_month: str) -> list[dict]:
 
 def fetch_sale(district_code: str, year_month: str) -> list[dict]:
     """국토부 아파트매매 실거래가 상세 자료 조회"""
-    url = "http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev"
+    url = "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev"
     params = {
         "serviceKey": MOLIT_KEY,
         "LAWD_CD":    district_code,
