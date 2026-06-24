@@ -1,631 +1,288 @@
-"""
-main.py — 부동산 AI 텔레그램 봇
-주식 에이전트와 동일한 send() 패턴 사용
+"""학교생활기록부 작성·검토 프롬프트 조립기.
+
+이 모듈은 2026학년도 고등학교 학교생활기록부 기재요령 기반의
+작성·검토 프롬프트를 교육과정, 영역, 모드에 따라 조립한다.
 """
 
-import os
+from __future__ import annotations
+
+import argparse
 import json
-import asyncio
-import logging
-from datetime import datetime, time as dtime
+from dataclasses import dataclass
+from typing import Literal
 
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
-from dotenv import load_dotenv
+Mode = Literal["작성", "검토"]
+Curriculum = Literal["2022개정", "2015개정"]
 
-from modules.db import (
-    init_db, is_already_alerted, mark_alerted,
-    add_watchlist, remove_watchlist, get_watchlist,
-    get_today_ai_calls, save_price_history, save_jeonse_ratio
-)
-from modules.data_collector import collect_all, collect_watchlist_prices
-from modules.zigbang_playwright import collect_zigbang_all
-from modules.scorer import run_scoring, fraud_risk
-from modules.kakao_analyzer import analyze_location
-from modules.official_price import get_official_price, check_hug_eligibility
-from modules.ai_analyzer import (
-    analyze_top_listings, analyze_single, weekly_report
-)
+COMMON_SYSTEM = """당신은 대한민국 고등학교 학교생활기록부(학생부) 작성과 검토를 돕는 전문 보조자입니다.
+2026학년도 학교생활기록부 기재요령을 철저히 준수하며, 교사가 직접 관찰·평가한 사실에
+근거한 문장만 다룹니다. 아래 규칙은 어떤 경우에도 예외 없이 적용합니다.
 
-load_dotenv()
-TOKEN   = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+[절대 금지 — 모든 영역 공통]
+다음 내용은 학생부 어떤 항목에도 기재할 수 없습니다. 입력에 포함되어 있으면
+작성 시 반드시 제외하고, 검토 시 반드시 위반으로 지적합니다.
+ 가. 공인어학시험 참여 사실·성적·수상 (TOEIC, TOEFL, TEPS, HSK, JPT, JLPT,
+     DELF, DALF, ZD, TESTDAF, DSH, DSD, TORFL, DELE, 한자능력검정 등 일체)
+ 나. 교과·비교과 교내·외 대회 참여 사실·성적·수상
+     ※ '대회'라는 단어 자체를 사용하지 않음(수상경력 항목 제외).
+ 다. 교외 기관·단체장이 수여한 교외상(표창장·감사장·공로상 포함)
+ 라. 교내·외 인증시험 참여 사실·성적
+ 마. 모의고사·전국연합학력평가 성적(원점수·석차·등급·백분위 등 일체)
+ 바. 논문을 학회지에 투고·등재하거나 학회에서 발표한 사실
+ 사. 도서 출간 사실
+ 아. 지식재산권(특허·실용신안·상표·디자인) 출원·등록 사실
+ 자. 어학연수·봉사 등 해외 활동실적 및 관련 내용
+ 차. 부모·친인척의 사회·경제적 지위(직종·직업·직장·직위명 암시 포함)
 
-CFG_PATH = os.path.join(os.path.dirname(__file__), 'config', 'conditions.json')
+[개인정보 보호]
+ - 학생 이름·학번·주민등록번호·연락처·주소 등 개인정보는 출력에 절대 포함하지 않음.
+ - 입력에 개인정보가 들어와도 출력에서는 제거하며, 검토 시 위반으로 지적함.
+ - 특정 기관·센터·대회의 구체 명칭, 부모 신상도 노출하지 않음.
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    handlers=[
-        logging.FileHandler("logs/bot.log"),
-        logging.StreamHandler()
-    ]
-)
-log = logging.getLogger(__name__)
+[형식 규칙]
+ - 모든 서술 문장은 명사형 종결어미로 끝냄. (예: ~함. / ~음. / ~임. / ~을 보임.)
+   '~했다/~한다/~합니다' 등 평서형·경어체를 쓰지 않음.
+ - 특수문자, 문단 구분 기호, 번호 매기기(①, 1., - 등)를 쓰지 않음. 줄글로 서술.
+ - 문자는 한글로 작성. 영문은 다음 경우에만 허용:
+   외국인 성명, 도로명 주소의 영문, 일반화된 명사(CEO·PD·UCC·IT·POP·CF·TV·
+   PAPS·SNS·PPT·AI 등), 고유명사(도서명·저자명 등), 단위.
 
-bot_app: Application = None
+[내용 원칙]
+ - 교사가 직접 관찰·평가한 사실에 근거함. 추측·과장·허위 서술 금지.
+ - 학생이 작성한 글을 그대로 인용하지 않음.
+ - 영역의 성격에 맞는 내용만 작성. 다른 영역에 들어갈 내용을 끌어오지 않음
+   (글자 수가 모자라도 타 영역 내용으로 채우지 않음).
+ - 단순 활동 나열을 지양하고, 학생의 개별적 특성·성장·변화가 드러나도록 서술함.
+ - 학생을 긍정적·교육적 관점에서 서술하되, 사실에 기반함.
+
+[글자 수]
+ - 각 영역의 최대 글자 수(한글 기준, 공백·기호 포함)를 초과하지 않음.
+ - 초과 시 핵심 위주로 압축하되, 위 규칙은 그대로 유지함.
+"""
+
+BRANCHES: dict[Curriculum, str] = {
+    "2022개정": """[적용 교육과정] 2022 개정 교육과정 (1~2학년)
+ - 창의적 체험활동 영역: 자율·자치활동 / 동아리활동 / 진로활동 (3영역)
+ - '자율활동'이 아니라 '자율·자치활동'으로 다룸.
+ - 봉사활동은 독립 영역이 아니라 각 영역과 연계하여 운영됨.
+ - 공통과목 세특은 1·2학기를 합산하여 500자 이내로 기재 가능.
+""",
+    "2015개정": """[적용 교육과정] 2015 개정 교육과정 (3학년)
+ - 창의적 체험활동 영역: 자율활동 / 동아리활동 / 봉사활동 / 진로활동 (4영역)
+ - '자율·자치활동'이 아니라 '자율활동'으로 다룸.
+ - 봉사활동은 독립 영역으로 시행됨.
+ - 자치활동 임원 재임기간은 3월 1일부터 졸업일(학적 반영일)까지로 봄.
+""",
+}
+
+AREA_MODULES = {
+    "자율·자치활동": """[영역] 자율·자치활동(2022) / 자율활동(2015)  ·  최대 500자
+[포함] 활동 실적, 진보의 정도, 행동의 변화 등을 종합하여 학생의 개별적 특성이
+       드러나도록 서술.
+[주의]
+ - 개별 특성이 드러나지 않는 활동 실적의 단순 나열은 지양.
+ - 자치활동 임원의 경우 직책과 재임기간이 사실과 일치하도록 다룸.
+ - 자율탐구활동은 산출물의 실적(제목·연구주제·참여인원·소요시간)이 아니라
+   학생의 특기사항(자료 수집·분석 능력, 주제 선정 노력 등)만 서술.
+""",
+    "자율활동": """[영역] 자율·자치활동(2022) / 자율활동(2015)  ·  최대 500자
+[포함] 활동 실적, 진보의 정도, 행동의 변화 등을 종합하여 학생의 개별적 특성이
+       드러나도록 서술.
+[주의]
+ - 개별 특성이 드러나지 않는 활동 실적의 단순 나열은 지양.
+ - 자치활동 임원의 경우 직책과 재임기간이 사실과 일치하도록 다룸.
+ - 자율탐구활동은 산출물의 실적(제목·연구주제·참여인원·소요시간)이 아니라
+   학생의 특기사항(자료 수집·분석 능력, 주제 선정 노력 등)만 서술.
+""",
+    "동아리활동": """[영역] 동아리활동  ·  최대 500자
+[포함] 동아리에서의 역할, 활동 과정에서 드러난 흥미·역량·태도의 변화.
+[주의]
+ - 정규교육과정 외 청소년단체·학교스포츠클럽은 특기사항을 쓰지 않고 명칭만 다룸.
+ - 자율동아리는 동아리명만 기재(소개가 필요하면 30자 이내).
+ - 동아리 단위의 '도우미'를 봉사 실적처럼 다루지 않음.
+""",
+    "진로활동": """[영역] 진로활동  ·  최대 500자
+[포함] 진로 희망과 관련된 자질, 학생이 수행한 노력·활동, 진로 상담 결과,
+       활동 참여도·의욕·태도의 변화, 교사의 관찰·평가 내용.
+[주의]
+ - 모든 학생을 대상으로 작성(진로활동을 편성하지 않았더라도).
+ - 진로 희망(희망분야)을 포함. 정하지 못했으면 '진로탐색 중임.' 등으로 표현.
+ - 이수시간이 0인 경우 그 사유를 서술(예: 순회교육으로 활동 내용이 없음.).
+""",
+    "과목별 세부능력 및 특기사항": """[영역] 과목별 세부능력 및 특기사항  ·  최대 500자
+       (2022 공통과목은 1·2학기 합산 500자)
+[포함]
+ - 성취기준·성취수준에 근거하여 학생 개인의 성취 과정과 특성이 명료히 드러나게.
+ - 학생참여형 수업·수행평가에서 교사가 직접 관찰·평가한 내용.
+ - 자기주도적 학습에 의한 변화와 성장 정도 중심.
+[주의]
+ - 수업 활동의 단순 나열이나, 성취기준에 이미 명시된 지식의 단순 서술 지양.
+ - 창의적 체험활동에 기재할 체험활동 내용을 세특에 끌어오지 않음.
+ - 대회·방과후학교·소논문·MOOC/KOCW 관련 사항은 기재 불가.
+ - 수업에 참여하지 못한 학생은 사유를 '특이사항 없음.' 형식으로 서술.
+[과목명] {subject}
+""",
+    "행동특성 및 종합의견": """[영역] 행동특성 및 종합의견  ·  최대 300자
+[포함]
+ - 학년 동안 지속적으로 관찰한 행동특성을 바탕으로 학생을 총체적으로 이해할 수 있게.
+ - 성장 정도, 발전 가능성을 고려하여 학생의 성장을 지원하는 교육적 관점에서 서술.
+[주의]
+ - 부정적 행동특성을 다룰 경우 막연한 평가가 아니라 구체적 행동에 근거.
+ - 다른 항목에 기재할 수 없는 내용(방과후학교 활동 등)을 여기로 끌어오지 않음.
+ - 최대 300자로 가장 짧으므로, 가장 핵심적인 특성 위주로 압축.
+""",
+}
+
+WRITE_SCHEMA = """{
+  "mode": "작성",
+  "영역": "진로활동",
+  "교육과정": "2022개정",
+  "생성문장": "명사형 종결어미로 끝나는 완성된 학생부 문장.",
+  "글자수": 412,
+  "최대글자수": 500,
+  "초과여부": false,
+  "반영한_근거": ["메모에서 반영한 핵심 관찰 내용 1", "내용 2"],
+  "제외한_항목": [
+    {"내용": "TOEIC 900점", "사유": "공인어학시험 성적(가) — 기재 불가"}
+  ],
+  "자가점검": {
+    "금지어_없음": true,
+    "명사형_종결": true,
+    "특수문자_없음": true,
+    "개인정보_없음": true
+  }
+}"""
+
+REVIEW_SCHEMA = """{
+  "mode": "검토",
+  "영역": "동아리활동",
+  "교육과정": "2015개정",
+  "원문": "검토 대상으로 입력된 원래 문구.",
+  "위반사항": [
+    {
+      "유형": "금지어(나)",
+      "심각도": "높음",
+      "원문위치": "교내 진로탐색대회에서 최우수상을 수상",
+      "수정제안": "삭제",
+      "근거": "교내·외 대회 참여·수상은 수상경력 외 어떤 항목에도 기재 불가. '대회' 표현도 금지."
+    }
+  ],
+  "수정안": "모든 위반을 교정한 완성 문장(명사형 종결, 금지어·개인정보 제거).",
+  "글자수": 318,
+  "최대글자수": 300,
+  "초과여부": true,
+  "종합의견": "대회 관련 표현과 평서형 종결을 정리했고, 글자 수가 18자 초과되어 압축이 필요함."
+}"""
+
+MODE_INSTRUCTIONS: dict[Mode, str] = {
+    "작성": """[작업: 작성]
+아래 '교사 관찰 메모'를 근거로, 위의 모든 규칙을 지켜 해당 영역의 학생부 문장을
+완성하세요. 메모에 금지 항목(가~차)이나 개인정보가 있으면 제외하고 작성합니다.
+결과는 지정된 JSON 형식으로만 출력합니다.
+
+교사 관찰 메모:
+\"\"\"
+{user_input}
+\"\"\"
+
+[출력 JSON 스키마]
+모델은 이 JSON만 출력(앞뒤 설명·코드펜스 없이).
+{schema}
+""",
+    "검토": """[작업: 검토]
+아래 '기존 작성 문구'를 위의 모든 규칙에 따라 점검하세요.
+ 1) 위반 사항을 빠짐없이 찾아 유형·심각도·근거와 함께 제시합니다.
+ 2) 모든 위반을 교정한 '수정안' 전체 문장을 제시합니다.
+ 3) 현재 글자 수와 최대 글자 수를 비교합니다.
+결과는 지정된 JSON 형식으로만 출력합니다.
+
+기존 작성 문구:
+\"\"\"
+{user_input}
+\"\"\"
+
+[출력 JSON 스키마]
+모델은 이 JSON만 출력(앞뒤 설명·코드펜스 없이).
+{schema}
+""",
+}
+
+CANONICAL_AREA_BY_CURRICULUM = {
+    ("2022개정", "자율활동"): "자율·자치활동",
+    ("2015개정", "자율·자치활동"): "자율활동",
+}
+
+MAX_CHARS = {
+    "자율·자치활동": 500,
+    "자율활동": 500,
+    "동아리활동": 500,
+    "진로활동": 500,
+    "과목별 세부능력 및 특기사항": 500,
+    "행동특성 및 종합의견": 300,
+}
 
 
-# ── 설정 로드/저장 ───────────────────────────────────────────────────
+@dataclass(frozen=True)
+class PromptInput:
+    """프롬프트 조립에 필요한 입력값."""
 
-def load_cfg() -> dict:
-    with open(CFG_PATH) as f:
-        return json.load(f)
-
-
-def save_cfg(cfg: dict):
-    with open(CFG_PATH, "w", encoding="utf-8") as f:
-        json.dump(cfg, f, ensure_ascii=False, indent=2)
+    curriculum: Curriculum
+    area: str
+    content: str
+    subject: str = "입력된 과목명을 반영하여 작성."
 
 
-# ── 텔레그램 전송 (분할 지원) ────────────────────────────────────────
+def normalize_area(curriculum: Curriculum, area: str) -> str:
+    """교육과정과 불일치하는 자율 영역 명칭을 자동 보정한다."""
 
-async def send(text: str, chat_id: str = None):
-    cid  = chat_id or CHAT_ID
-    MAX  = 4000
-    if len(text) <= MAX:
-        await bot_app.bot.send_message(chat_id=cid, text=text)
-    else:
-        for chunk in [text[i:i+MAX] for i in range(0, len(text), MAX)]:
-            await bot_app.bot.send_message(chat_id=cid, text=chunk)
-            await asyncio.sleep(0.3)
+    normalized = CANONICAL_AREA_BY_CURRICULUM.get((curriculum, area), area)
+    if normalized not in AREA_MODULES:
+        allowed = ", ".join(AREA_MODULES)
+        raise ValueError(f"지원하지 않는 영역입니다: {area}. 허용값: {allowed}")
+    return normalized
 
 
-# ── 알림 시간 체크 ───────────────────────────────────────────────────
+def build_prompt(row: PromptInput, mode: Mode) -> tuple[str, str]:
+    """명세서의 4개 블록을 조립하여 system, user 프롬프트를 반환한다."""
 
-def is_quiet_time() -> bool:
-    cfg  = load_cfg()
-    hour = datetime.now().hour
-    qs   = cfg["alert"]["quiet_start"]   # 22
-    qe   = cfg["alert"]["quiet_end"]     # 7
-    return hour >= qs or hour < qe
+    if row.curriculum not in BRANCHES:
+        raise ValueError("교육과정은 '2022개정' 또는 '2015개정'이어야 합니다.")
+    if mode not in MODE_INSTRUCTIONS:
+        raise ValueError("mode는 '작성' 또는 '검토'여야 합니다.")
 
-
-def should_alert_now(score: float) -> bool:
-    cfg = load_cfg()
-    if score >= cfg["alert"]["important_score"]:
-        return True          # 85점+ 는 방해금지 무시하고 즉시
-    return not is_quiet_time()
-
-
-# ── 매물 포맷 ────────────────────────────────────────────────────────
-
-def fmt_jeonse(item: dict, show_score: bool = True) -> str:
-    loc  = item.get("location") or {}
-    sub  = loc.get("subway", {})
-    hosp = loc.get("hospital", {})
-    lines = [
-        f"[전세] {item.get('district','')} {item.get('name','')}",
-        f"  {item.get('area',0):.0f}m² / {item.get('age',0)}년차 / {item.get('floor','')}층",
-        f"  보증금: {item.get('deposit',0)//10000}만원",
-    ]
-    if sub.get("station"):
-        lines.append(f"  지하철: {sub['station']} 도보 {sub.get('walk_min','?')}분")
-    if hosp.get("name"):
-        lines.append(f"  병원: {hosp['name']} 차량 {hosp.get('car_min','?')}분")
-    if show_score:
-        lines.append(f"  종합점수: {item.get('score',0)}점")
-    return "\n".join(lines)
+    area = normalize_area(row.curriculum, row.area)
+    area_module = AREA_MODULES[area].format(subject=row.subject)
+    system = "\n\n".join([COMMON_SYSTEM, BRANCHES[row.curriculum], area_module])
+    schema = WRITE_SCHEMA if mode == "작성" else REVIEW_SCHEMA
+    user = MODE_INSTRUCTIONS[mode].format(user_input=row.content, schema=schema)
+    return system, user
 
 
-def fmt_sale(item: dict, show_score: bool = True) -> str:
-    lines = [
-        f"[매매] {item.get('district','')} {item.get('name','')}",
-        f"  {item.get('area',0):.0f}m² / {item.get('age',0)}년차 / {item.get('floor','')}층",
-        f"  매매가: {item.get('price',0)//10000}만원",
-        f"  {'1순위 지역' if item.get('is_priority') else '2순위 지역'}",
-    ]
-    if show_score:
-        lines.append(f"  종합점수: {item.get('score',0)}점")
-    return "\n".join(lines)
+def get_max_chars(curriculum: Curriculum, area: str) -> int:
+    """교육과정별 자동 보정 후 영역의 최대 글자 수를 반환한다."""
+
+    return MAX_CHARS[normalize_area(curriculum, area)]
 
 
-# ── 명령어: /start ───────────────────────────────────────────────────
+def main() -> None:
+    parser = argparse.ArgumentParser(description="학생부 작성·검토 프롬프트를 JSON으로 출력합니다.")
+    parser.add_argument("--curriculum", choices=["2022개정", "2015개정"], required=True)
+    parser.add_argument("--area", required=True)
+    parser.add_argument("--mode", choices=["작성", "검토"], required=True)
+    parser.add_argument("--content", required=True)
+    parser.add_argument("--subject", default="입력된 과목명을 반영하여 작성.")
+    args = parser.parse_args()
 
-async def cmd_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    msg = (
-        "부동산 AI 모니터링 봇\n\n"
-        "내 조건\n"
-        "전세: 2.5억 이하 / 56~62m2 / 10년 이내 / 지하철 10분\n"
-        "매매: 6억 이하 / 81~87m2 / 10년 이내\n\n"
-        "명령어\n"
-        "/scan — 전체 스캔 + AI 분석\n"
-        "/jeonse — 전세 매물 검색\n"
-        "/sale — 매매 매물 검색\n"
-        "/fraud — 전세사기 위험 체크\n"
-        "/compare 지역1 지역2 — 지역 비교\n"
-        "/watch 단지명 — 관심 단지 등록\n"
-        "/unwatch 단지명 — 관심 단지 해제\n"
-        "/watchlist — 관심 단지 목록\n"
-        "/set 항목 값 — 조건 변경\n"
-        "/report — 주간 AI 리포트\n"
-        "/status — 시스템 상태"
+    system, user = build_prompt(
+        PromptInput(
+            curriculum=args.curriculum,
+            area=args.area,
+            content=args.content,
+            subject=args.subject,
+        ),
+        args.mode,
     )
-    await send(msg)
-
-
-# ── 명령어: /scan ────────────────────────────────────────────────────
-
-async def cmd_scan(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await send("전체 매물 스캔 중... (2~3분 소요)")
-    try:
-        raw      = collect_zigbang_all("both")
-        jeonse_s = run_scoring(raw["jeonse"], fetch_location=True)
-        sale_s   = run_scoring(raw["sale"],   fetch_location=True)
-
-        cfg      = load_cfg()
-        j_min    = cfg["jeonse"]["alert_min_score"]
-        s_min_p  = cfg["sale"]["alert_min_score_priority"]
-        s_min_o  = cfg["sale"]["alert_min_score_others"]
-
-        now = datetime.now().strftime("%m/%d %H:%M")
-        lines = [f"매물 스캔 결과 [{now}]\n"]
-        lines.append(f"전세 통과: {len(jeonse_s)}건 / 매매 통과: {len(sale_s)}건\n")
-
-        # 전세 상위
-        j_top = [i for i in jeonse_s if i["score"] >= j_min][:5]
-        lines.append(f"전세 점수 {j_min}점+: {len(j_top)}건")
-        for item in j_top:
-            lines.append(fmt_jeonse(item))
-            lines.append("")
-
-        # 매매 상위
-        s_top = [i for i in sale_s
-                 if (i["is_priority"] and i["score"] >= s_min_p) or
-                    (not i["is_priority"] and i["score"] >= s_min_o)][:5]
-        lines.append(f"매매 점수 기준 통과: {len(s_top)}건")
-        for item in s_top:
-            lines.append(fmt_sale(item))
-            lines.append("")
-
-        await send("\n".join(lines))
-
-        # 히스토리 저장
-        for item in jeonse_s[:20]:
-            save_price_history(item.get("name",""), item.get("district",""),
-                               "jeonse", item.get("deposit",0),
-                               item.get("area",0), item.get("floor",""))
-        for item in sale_s[:20]:
-            save_price_history(item.get("name",""), item.get("district",""),
-                               "sale", item.get("price",0),
-                               item.get("area",0), item.get("floor",""))
-
-        # AI 분석 (상위 있을 때만)
-        if j_top or s_top:
-            await send("AI 종합 분석 중...")
-            ai_result = analyze_top_listings(j_top, s_top)
-            await send(ai_result)
-
-    except Exception as e:
-        log.error(f"스캔 오류: {e}")
-        await send(f"스캔 오류: {e}")
-
-
-# ── 명령어: /jeonse ──────────────────────────────────────────────────
-
-async def cmd_jeonse(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await send("전세 매물 검색 중...")
-    try:
-        raw    = collect_zigbang_all("both")
-        scored = run_scoring(raw["jeonse"], fetch_location=True)
-        cfg    = load_cfg()
-        j_min  = cfg["jeonse"]["alert_min_score"]
-        top    = [i for i in scored if i["score"] >= j_min]
-
-        if not top:
-            await send(
-                f"조건 맞는 전세 매물 없음\n"
-                f"(2.5억 이하 / 56~62m2 / 10년 이내 / 지하철 10분 / {j_min}점+)"
-            )
-            return
-
-        lines = [f"전세 매물 [{len(top)}건]\n"]
-        for i, item in enumerate(top[:8], 1):
-            lines.append(f"{i}. {fmt_jeonse(item)}\n")
-        await send("\n".join(lines))
-
-    except Exception as e:
-        await send(f"오류: {e}")
-
-
-# ── 명령어: /sale ────────────────────────────────────────────────────
-
-async def cmd_sale(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await send("매매 매물 검색 중...")
-    try:
-        raw    = collect_zigbang_all("both")
-        scored = run_scoring(raw["sale"], fetch_location=True)
-        cfg    = load_cfg()
-        top    = sorted(scored, key=lambda x: x["score"], reverse=True)[:8]
-
-        if not top:
-            await send("조건 맞는 매매 매물 없음 (6억 이하 / 81~87m2 / 10년 이내)")
-            return
-
-        lines = [f"매매 매물 [{len(top)}건]\n"]
-        for i, item in enumerate(top, 1):
-            lines.append(f"{i}. {fmt_sale(item)}\n")
-        await send("\n".join(lines))
-
-    except Exception as e:
-        await send(f"오류: {e}")
-
-
-# ── 명령어: /fraud ───────────────────────────────────────────────────
-
-async def cmd_fraud(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await send("전세사기 위험 분석 중...")
-    try:
-        raw        = collect_zigbang_all("both")
-        jeonse_map = {i.get("name",""): i for i in raw["jeonse"]}
-        sale_map   = {i.get("name",""): i for i in raw["sale"]}
-
-        danger_lines = ["전세사기 위험 분석\n"]
-        danger_count = 0
-
-        for name, j_item in list(jeonse_map.items())[:30]:
-            s_item     = sale_map.get(name)
-            sale_price = s_item.get("price", 0) if s_item else 0
-            j_price    = j_item.get("deposit", 0)
-
-            # 공시가격 조회
-            official = get_official_price(
-                name, j_item.get("dong",""), j_item.get("district","")
-            )
-            hug  = check_hug_eligibility(j_price, official)
-            risk = fraud_risk(j_price, sale_price, official)
-
-            # 위험/주의 이상만 출력
-            if risk["overall_risk"] in ("위험", "주의") or hug["eligible"] is False:
-                danger_count += 1
-                danger_lines.append(
-                    f"{risk['overall_risk']} | {j_item.get('district','')} {name}\n"
-                    f"  전세 {j_price//10000}만원 / 매매 {sale_price//10000}만원\n"
-                    f"  전세가율: {risk.get('jeonse_ratio',0)}%\n"
-                    f"  HUG: {'가입가능' if hug['eligible'] else '가입불가 — 주의'}\n"
-                )
-                save_jeonse_ratio(name, j_item.get("district",""),
-                                  j_price, sale_price,
-                                  risk.get("jeonse_ratio", 0))
-
-        if danger_count == 0:
-            danger_lines.append("조회 범위에서 고위험 매물 없음")
-        danger_lines.append("\n전세가율 80% 초과 or HUG 불가 시 계약 전 반드시 확인")
-        await send("\n".join(danger_lines))
-
-    except Exception as e:
-        await send(f"오류: {e}")
-
-
-# ── 명령어: /watch /unwatch /watchlist ──────────────────────────────
-
-async def cmd_watch(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    if not ctx.args:
-        await send("사용법: /watch 단지명\n예) /watch 반석힐스테이트")
-        return
-    name = " ".join(ctx.args)
-    ok = add_watchlist(name)
-    if ok:
-        await send(f"관심 단지 등록: {name}\n가격 변동 시 알림 드립니다.")
-    else:
-        await send(f"이미 등록된 단지입니다: {name}")
-
-
-async def cmd_unwatch(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    if not ctx.args:
-        await send("사용법: /unwatch 단지명")
-        return
-    name = " ".join(ctx.args)
-    ok = remove_watchlist(name)
-    await send(f"{'해제 완료: ' + name if ok else '등록된 단지 없음: ' + name}")
-
-
-async def cmd_watchlist(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    wl = get_watchlist()
-    if not wl:
-        await send("등록된 관심 단지 없음\n/watch 단지명 으로 등록")
-        return
-    lines = ["관심 단지 목록\n"]
-    for i, w in enumerate(wl, 1):
-        lines.append(f"{i}. {w['complex_name']} ({w['district']}) — {w['added_at'][:10]}")
-    await send("\n".join(lines))
-
-
-# ── 명령어: /set ─────────────────────────────────────────────────────
-
-async def cmd_set(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    """
-    /set 항목 값
-    예) /set jeonse_max 2억
-        /set sale_max 7억
-        /set jeonse_area 59
-        /set subway_max 15
-    """
-    if len(ctx.args) < 2:
-        await send(
-            "사용법: /set 항목 값\n\n"
-            "항목 목록\n"
-            "jeonse_max — 전세 상한가 (예: 2억5천)\n"
-            "sale_max — 매매 상한가 (예: 6억)\n"
-            "jeonse_area — 전세 최소면적 m2\n"
-            "sale_area — 매매 최소면적 m2\n"
-            "jeonse_age — 전세 최대연식 년\n"
-            "sale_age — 매매 최대연식 년\n"
-            "subway_max — 지하철 최대 도보 분\n"
-            "min_score — 알림 최소 점수"
-        )
-        return
-
-    key = ctx.args[0]
-    val_str = ctx.args[1].replace("억", "00000000").replace("천", "0000").replace(",", "")
-
-    cfg = load_cfg()
-    old_val = None
-
-    try:
-        val = int(val_str)
-
-        mapping = {
-            "jeonse_max":  ("jeonse", "max_price",       val * (1 if val > 100000 else 10000)),
-            "sale_max":    ("sale",   "max_price",        val * (1 if val > 100000 else 10000)),
-            "jeonse_area": ("jeonse", "min_area",         val),
-            "sale_area":   ("sale",   "min_area",         val),
-            "jeonse_age":  ("jeonse", "max_age_years",    val),
-            "sale_age":    ("sale",   "max_age_years",    val),
-            "subway_max":  ("jeonse", "subway_walk_max_min", val),
-            "min_score":   ("jeonse", "alert_min_score",  val),
-        }
-
-        if key not in mapping:
-            await send(f"알 수 없는 항목: {key}")
-            return
-
-        section, field, new_val = mapping[key]
-        old_val = cfg[section][field]
-        cfg[section][field] = new_val
-        save_cfg(cfg)
-
-        # 만원 단위 표시
-        def fmt_val(v, f):
-            if "price" in f and v >= 10000:
-                return f"{v//10000}만원"
-            return str(v)
-
-        await send(
-            f"설정 변경 완료\n"
-            f"{key}: {fmt_val(old_val, field)} → {fmt_val(new_val, field)}\n"
-            f"다음 스캔부터 적용됩니다"
-        )
-    except ValueError:
-        await send(f"값 형식 오류: {ctx.args[1]}\n숫자로 입력해주세요 (예: /set jeonse_max 25000)")
-
-
-# ── 명령어: /compare ─────────────────────────────────────────────────
-
-async def cmd_compare(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    if len(ctx.args) < 2:
-        await send("사용법: /compare 유성구 세종시")
-        return
-    r1, r2 = ctx.args[0], ctx.args[1]
-    await send(f"{r1} vs {r2} 비교 분석 중...")
-    try:
-        raw    = collect_zigbang_all("both")
-        all_s  = run_scoring(raw["jeonse"] + raw["sale"], fetch_location=False)
-
-        def stats(items, region):
-            m = [i for i in items if i.get("district","") == region]
-            if not m:
-                return {"count": 0, "avg_price": 0, "avg_score": 0}
-            prices = [i.get("deposit", i.get("price", 0)) for i in m]
-            return {
-                "count":     len(m),
-                "avg_price": int(sum(prices)/len(prices)//10000),
-                "avg_score": round(sum(i.get("score",0) for i in m)/len(m), 1),
-            }
-
-        s1j = stats([i for i in all_s if i["trade_type"]=="jeonse"], r1)
-        s2j = stats([i for i in all_s if i["trade_type"]=="jeonse"], r2)
-        s1s = stats([i for i in all_s if i["trade_type"]=="sale"],   r1)
-        s2s = stats([i for i in all_s if i["trade_type"]=="sale"],   r2)
-
-        msg = (
-            f"{r1} vs {r2} 비교\n\n"
-            f"전세\n"
-            f"{r1}: {s1j['count']}건 / 평균 {s1j['avg_price']}만원 / 점수 {s1j['avg_score']}점\n"
-            f"{r2}: {s2j['count']}건 / 평균 {s2j['avg_price']}만원 / 점수 {s2j['avg_score']}점\n\n"
-            f"매매\n"
-            f"{r1}: {s1s['count']}건 / 평균 {s1s['avg_price']}만원 / 점수 {s1s['avg_score']}점\n"
-            f"{r2}: {s2s['count']}건 / 평균 {s2s['avg_price']}만원 / 점수 {s2s['avg_score']}점"
-        )
-        await send(msg)
-    except Exception as e:
-        await send(f"오류: {e}")
-
-
-# ── 명령어: /report ──────────────────────────────────────────────────
-
-async def cmd_report(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    await send("주간 리포트 생성 중... (AI 분석)")
-    try:
-        raw   = collect_zigbang_all("both")
-        stats = {}
-        for item in raw["jeonse"] + raw["sale"]:
-            d = item.get("district", "기타")
-            t = item.get("trade_type", "")
-            if d not in stats:
-                stats[d] = {"jeonse": [], "sale": []}
-            p = item.get("deposit" if t=="jeonse" else "price", 0)
-            if p > 0:
-                stats[d][t].append(p)
-
-        region_summary = {
-            r: {
-                "jeonse_avg":   int(sum(v["jeonse"])/len(v["jeonse"])//10000) if v["jeonse"] else 0,
-                "jeonse_count": len(v["jeonse"]),
-                "sale_avg":     int(sum(v["sale"])/len(v["sale"])//10000)     if v["sale"]   else 0,
-                "sale_count":   len(v["sale"]),
-            }
-            for r, v in stats.items()
-        }
-        report = weekly_report(region_summary)
-        await send(report)
-    except Exception as e:
-        await send(f"오류: {e}")
-
-
-# ── 명령어: /status ──────────────────────────────────────────────────
-
-async def cmd_status(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    cfg    = load_cfg()
-    ai_cnt = get_today_ai_calls()
-    wl_cnt = len(get_watchlist())
-    now    = datetime.now().strftime("%Y-%m-%d %H:%M")
-    msg = (
-        f"시스템 상태 [{now}]\n\n"
-        f"AI 호출: {ai_cnt}/5회 (오늘)\n"
-        f"관심 단지: {wl_cnt}개\n\n"
-        f"현재 조건\n"
-        f"전세: {cfg['jeonse']['max_price']//10000}만원 이하 / "
-        f"{cfg['jeonse']['min_area']}~{cfg['jeonse']['max_area']}m2 / "
-        f"{cfg['jeonse']['max_age_years']}년 이내 / "
-        f"지하철 {cfg['jeonse']['subway_walk_max_min']}분\n"
-        f"매매: {cfg['sale']['max_price']//10000}만원 이하 / "
-        f"{cfg['sale']['min_area']}~{cfg['sale']['max_area']}m2 / "
-        f"{cfg['sale']['max_age_years']}년 이내\n\n"
-        f"스캔 지역\n"
-        f"대전: 유성/서/중/동/대덕구\n"
-        f"세종: 전지역\n"
-        f"서울: 모니터링 전용\n\n"
-        f"스케줄\n"
-        f"매일 08:00 — 신규 매물 스캔\n"
-        f"매주 목요일 — 한국부동산원 시세\n"
-        f"매주 월요일 — AI 주간 리포트"
-    )
-    await send(msg)
-
-
-# ── 스케줄: 매일 08:00 자동 스캔 ────────────────────────────────────
-
-async def daily_scan(ctx: ContextTypes.DEFAULT_TYPE):
-    log.info("일일 스캔 시작")
-    try:
-        raw     = collect_zigbang_all("both")
-        jeonse  = run_scoring(raw["jeonse"], fetch_location=True)
-        sale    = run_scoring(raw["sale"],   fetch_location=True)
-        cfg     = load_cfg()
-        j_min   = cfg["jeonse"]["alert_min_score"]
-        s_min_p = cfg["sale"]["alert_min_score_priority"]
-        s_min_o = cfg["sale"]["alert_min_score_others"]
-
-        now   = datetime.now().strftime("%m/%d")
-        lines = [f"아침 스캔 [{now}]\n"]
-
-        j_new = []
-        for item in jeonse:
-            if item["score"] < j_min:
-                continue
-            lid = item.get("listing_id", "")
-            if not is_already_alerted(lid, "jeonse"):
-                j_new.append(item)
-                mark_alerted(lid, "jeonse", item.get("deposit",0), item["score"])
-
-        s_new = []
-        for item in sale:
-            min_s = s_min_p if item.get("is_priority") else s_min_o
-            if item["score"] < min_s:
-                continue
-            lid = item.get("listing_id", "")
-            if not is_already_alerted(lid, "sale"):
-                s_new.append(item)
-                mark_alerted(lid, "sale", item.get("price",0), item["score"])
-
-        if not j_new and not s_new:
-            lines.append("신규 조건 통과 매물 없음")
-            await bot_app.bot.send_message(chat_id=CHAT_ID, text="\n".join(lines))
-            return
-
-        lines.append(f"신규 전세: {len(j_new)}건 / 신규 매매: {len(s_new)}건\n")
-        for item in j_new[:3]:
-            lines.append(fmt_jeonse(item))
-            lines.append("")
-        for item in s_new[:3]:
-            lines.append(fmt_sale(item))
-            lines.append("")
-
-        await bot_app.bot.send_message(chat_id=CHAT_ID, text="\n".join(lines))
-
-        # AI 분석
-        if j_new or s_new:
-            ai = analyze_top_listings(j_new[:3], s_new[:3])
-            await bot_app.bot.send_message(chat_id=CHAT_ID, text=ai)
-
-    except Exception as e:
-        log.error(f"일일 스캔 오류: {e}")
-
-
-# ── 스케줄: 매주 월요일 08:30 주간 리포트 ────────────────────────────
-
-async def weekly_report_task(ctx: ContextTypes.DEFAULT_TYPE):
-    if datetime.now().weekday() != 0:
-        return
-    log.info("주간 리포트 시작")
-    try:
-        raw   = collect_zigbang_all("both")
-        stats = {}
-        for item in raw["jeonse"] + raw["sale"]:
-            d = item.get("district","기타")
-            t = item.get("trade_type","")
-            if d not in stats:
-                stats[d] = {"jeonse":[], "sale":[]}
-            p = item.get("deposit" if t=="jeonse" else "price", 0)
-            if p > 0:
-                stats[d][t].append(p)
-        region_summary = {
-            r: {
-                "jeonse_avg": int(sum(v["jeonse"])/len(v["jeonse"])//10000) if v["jeonse"] else 0,
-                "sale_avg":   int(sum(v["sale"])/len(v["sale"])//10000)     if v["sale"]   else 0,
-            }
-            for r, v in stats.items()
-        }
-        report = weekly_report(region_summary)
-        await bot_app.bot.send_message(chat_id=CHAT_ID, text=report)
-    except Exception as e:
-        log.error(f"주간 리포트 오류: {e}")
-
-
-# ── 메인 ─────────────────────────────────────────────────────────────
-
-def main():
-    global bot_app
-    init_db()
-
-    bot_app = Application.builder().token(TOKEN).build()
-
-    # 명령어 등록
-    handlers = [
-        ("start",     cmd_start),
-        ("scan",      cmd_scan),
-        ("jeonse",    cmd_jeonse),
-        ("sale",      cmd_sale),
-        ("fraud",     cmd_fraud),
-        ("watch",     cmd_watch),
-        ("unwatch",   cmd_unwatch),
-        ("watchlist", cmd_watchlist),
-        ("set",       cmd_set),
-        ("compare",   cmd_compare),
-        ("report",    cmd_report),
-        ("status",    cmd_status),
-    ]
-    for cmd, handler in handlers:
-        bot_app.add_handler(CommandHandler(cmd, handler))
-
-    # 스케줄 등록
-    jq = bot_app.job_queue
-    jq.run_daily(daily_scan,          dtime(8, 0),  name="daily_scan")
-    jq.run_daily(weekly_report_task,  dtime(8, 30), name="weekly_report")
-
-    log.info("부동산 AI 봇 시작")
-    bot_app.run_polling(drop_pending_updates=True)
+    print(json.dumps({"system": system, "user": user}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
