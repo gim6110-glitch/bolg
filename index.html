@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>학교생활기록부 작성·검토 도우미</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__content">
+        <p class="eyebrow">2026학년도 고등학교 학교생활기록부 기준</p>
+        <h1>학교생활기록부 작성·검토 도우미</h1>
+        <p class="hero__description">
+          교사 관찰 메모를 바탕으로 학생부 문장을 작성하거나 기존 문구의 금지 항목, 개인정보,
+          형식, 글자 수를 브라우저에서 바로 점검합니다.
+        </p>
+      </div>
+    </header>
+
+    <main class="app" aria-live="polite">
+      <section class="panel panel--form" aria-labelledby="input-title">
+        <h2 id="input-title">입력</h2>
+        <form id="record-form">
+          <div class="grid">
+            <label>
+              작업 모드
+              <select id="mode" name="mode">
+                <option value="작성">작성</option>
+                <option value="검토">검토</option>
+              </select>
+            </label>
+
+            <label>
+              교육과정
+              <select id="curriculum" name="curriculum">
+                <option value="2022개정">2022개정 1~2학년</option>
+                <option value="2015개정">2015개정 3학년</option>
+              </select>
+            </label>
+
+            <label>
+              영역
+              <select id="area" name="area">
+                <option value="자율·자치활동">자율·자치활동</option>
+                <option value="동아리활동">동아리활동</option>
+                <option value="진로활동">진로활동</option>
+                <option value="과목별 세부능력 및 특기사항">과목별 세부능력 및 특기사항</option>
+                <option value="행동특성 및 종합의견">행동특성 및 종합의견</option>
+              </select>
+            </label>
+
+            <label id="subject-field">
+              과목명 세특 선택 시
+              <input id="subject" name="subject" placeholder="예 통합사회" />
+            </label>
+          </div>
+
+          <label class="textarea-label">
+            학생 활동 내용 또는 기존 작성 문구
+            <textarea id="content" name="content" rows="10" placeholder="예 학급 회의에서 친구들의 의견을 정리하고 갈등 상황에서 대안을 제시함. TOEIC 900점 등 금지 항목은 제외 또는 위반으로 표시됨."></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit">결과 생성</button>
+            <button type="button" id="sample-button" class="button-secondary">예시 입력</button>
+            <button type="reset" class="button-ghost">초기화</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel panel--result" aria-labelledby="result-title">
+        <div class="result-header">
+          <h2 id="result-title">결과</h2>
+          <span id="char-badge" class="badge">0자</span>
+        </div>
+        <div id="result" class="result-empty">입력 후 결과 생성을 누르면 작성 또는 검토 결과가 표시됩니다.</div>
+      </section>
+    </main>
+
+    <footer>
+      <p>본 도구는 교사의 검토를 보조합니다. 최종 입력 전 NEIS와 시도교육청 지침을 반드시 확인하세요.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
