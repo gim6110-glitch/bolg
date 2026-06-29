@@ -343,15 +343,14 @@ const R_SCH=`결과는 JSON만 출력(코드펜스 없이). 수정안 반드시 
 
 // ===== API =====
 async function callClaude(sys,usr){
-  if(!apiKey) throw new Error('API 키가 없습니다. 오른쪽 위 🔑 버튼을 눌러 입력해 주세요.');
-  const r=await fetch('https://api.anthropic.com/v1/messages',{
+  const r=await fetch('/.netlify/functions/claude',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:sys,messages:[{role:'user',content:usr}]})
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system:sys,user:usr,apiKey:apiKey||''})
   });
   const d=await r.json();
-  if(!r.ok) throw new Error(d.error?.message||'API 오류 '+r.status);
-  return d.content[0].text;
+  if(!r.ok) throw new Error(d.error||'API 오류 '+r.status);
+  return d.text;
 }
 function pJ(raw){
   // 코드펜스 제거
