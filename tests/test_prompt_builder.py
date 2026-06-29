@@ -2,14 +2,7 @@ import json
 import subprocess
 import sys
 
-import importlib.util
-import sys
-from pathlib import Path
-
-spec = importlib.util.spec_from_file_location("root_main", Path(__file__).resolve().parents[1] / "main.py")
-main = importlib.util.module_from_spec(spec)
-sys.modules[spec.name] = main
-spec.loader.exec_module(main)
+import main
 
 
 def test_build_prompt_uses_2022_branch_and_normalizes_area():
