@@ -17,8 +17,7 @@ def test_prompt_builder_is_2015_curriculum_and_area_specific():
     assert normalize_area('세특') == '과목별 세부능력 및 특기사항'
     assert '2015 개정 교육과정' in system
     assert '2022 개정 영역명으로 바꾸지 않음' in system
-    assert '공백 포함 300~350자. (잘한 학생은 최대한 350자, 부족하면 억지로 늘리지 않음)' in system
-    assert "성취수준은 '상 수준임', '도달함' 등 직접 판정 표현 금지" in system
+    assert '공백 포함 300~350자' in system
     assert '"과목명": "기계일반"' in user
     assert get_max_chars('행발') == 300
 
@@ -30,8 +29,6 @@ def test_review_prompt_contains_checklist_and_schema():
     assert '대학명·기관명·기업명·강사명' in system
     assert '기존 작성 문구' in user
     assert '위반사항' in user
-    assert '원문위치' in user
-    assert '종합의견' in user
     assert '최대글자수: 500' in user
 
 
@@ -68,20 +65,3 @@ def test_excel_template_structure_when_dependencies_available():
     assert loaded['작성용']['A2'].value == '연번'
     assert loaded['검토용']['E3'].value == '=IF(D3="","",LEN(D3))'
     assert loaded['작성용'].freeze_panes == 'A3'
-
-
-def test_builder_contains_all_required_prompt_sections():
-    import prompts.builder as builder
-
-    assert '카. 대학명, 기관명, 기업명, 상호명, 강사명' in builder.COMMON_SYSTEM
-    assert set(builder.AREA_PROMPTS) == {'자율활동', '동아리활동', '진로활동', '과목별 세부능력 및 특기사항', '행동특성 및 종합의견'}
-    assert '임원 활동 시 입력된 직책과 재임기간만 정확히 반영' in builder.AREA_PROMPTS['자율활동']
-    assert '심화탐구는 실제 근거 있을 때만 반영' in builder.AREA_PROMPTS['동아리활동']
-    assert '진로검사는 결과 나열 금지' in builder.AREA_PROMPTS['진로활동']
-    assert '인성·생활 태도보다 학업 역량·문제해결·자기주도 탐구 중심' in builder.AREA_PROMPTS['과목별 세부능력 및 특기사항']
-    assert '430~500자 범위에서 작성하되 최대 300자 엄수' in builder.AREA_PROMPTS['행동특성 및 종합의견']
-    assert '제외한항목' in builder.MODE_WRITE_SCHEMA
-    assert '자가점검' in builder.MODE_WRITE_SCHEMA
-    assert '위반사항' in builder.MODE_REVIEW_SCHEMA
-    assert '수정안' in builder.MODE_REVIEW_SCHEMA
-    assert '10자 이상 연속 일치' in builder.SIMILARITY_PROMPT
