@@ -3,61 +3,83 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>학교생활기록부 작성·검토 프로그램</title>
+    <title>학교생활기록부 작성·검토 도우미</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="app-header">
-      <p class="eyebrow">2015개정 교육과정 3학년 고정</p>
-      <h1>학교생활기록부 작성·검토 프로그램</h1>
-      <p>자율활동, 동아리활동, 진로활동, 세특, 행발 영역별 입력 양식으로 작성·검토를 보조합니다.</p>
+    <header class="hero">
+      <div class="hero__content">
+        <p class="eyebrow">2026학년도 고등학교 학교생활기록부 기준</p>
+        <h1>학교생활기록부 작성·검토 도우미</h1>
+        <p class="hero__description">
+          교사 관찰 메모를 바탕으로 학생부 문장을 작성하거나 기존 문구의 금지 항목, 개인정보,
+          형식, 글자 수를 브라우저에서 바로 점검합니다.
+        </p>
+      </div>
     </header>
 
-    <main class="app-shell">
-      <section class="toolbar" aria-label="모드와 영역 선택">
-        <div class="mode-toggle" role="group" aria-label="작성 검토 모드">
-          <button type="button" class="is-active" data-mode="작성">작성</button>
-          <button type="button" data-mode="검토">검토</button>
-        </div>
-        <nav class="tab-bar" aria-label="영역 탭">
-          <button type="button" class="is-active" data-area="자율활동">자율활동</button>
-          <button type="button" data-area="동아리활동">동아리활동</button>
-          <button type="button" data-area="진로활동">진로활동</button>
-          <button type="button" data-area="세특">세특</button>
-          <button type="button" data-area="행발">행발</button>
-        </nav>
+    <main class="app" aria-live="polite">
+      <section class="panel panel--form" aria-labelledby="input-title">
+        <h2 id="input-title">입력</h2>
+        <form id="record-form">
+          <div class="grid">
+            <label>
+              작업 모드
+              <select id="mode" name="mode">
+                <option value="작성">작성</option>
+                <option value="검토">검토</option>
+              </select>
+            </label>
+
+            <label>
+              교육과정
+              <select id="curriculum" name="curriculum">
+                <option value="2022개정">2022개정 1~2학년</option>
+                <option value="2015개정">2015개정 3학년</option>
+              </select>
+            </label>
+
+            <label>
+              영역
+              <select id="area" name="area">
+                <option value="자율·자치활동">자율·자치활동</option>
+                <option value="동아리활동">동아리활동</option>
+                <option value="진로활동">진로활동</option>
+                <option value="과목별 세부능력 및 특기사항">과목별 세부능력 및 특기사항</option>
+                <option value="행동특성 및 종합의견">행동특성 및 종합의견</option>
+              </select>
+            </label>
+
+            <label id="subject-field">
+              과목명 세특 선택 시
+              <input id="subject" name="subject" placeholder="예 통합사회" />
+            </label>
+          </div>
+
+          <label class="textarea-label">
+            학생 활동 내용 또는 기존 작성 문구
+            <textarea id="content" name="content" rows="10" placeholder="예 학급 회의에서 친구들의 의견을 정리하고 갈등 상황에서 대안을 제시함. TOEIC 900점 등 금지 항목은 제외 또는 위반으로 표시됨."></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit">결과 생성</button>
+            <button type="button" id="sample-button" class="button-secondary">예시 입력</button>
+            <button type="reset" class="button-ghost">초기화</button>
+          </div>
+        </form>
       </section>
 
-      <section class="workspace">
-        <form id="record-form" class="panel input-panel">
-          <div class="panel-heading">
-            <div>
-              <h2 id="input-title">자율활동 작성 입력</h2>
-              <p id="curriculum-note">교육과정은 2015개정으로 고정되며 자율·자치활동이 아닌 자율활동으로 처리됩니다.</p>
-            </div>
-            <span id="limit-badge" class="limit-badge">최대 500자</span>
-          </div>
-          <div id="dynamic-fields" class="field-grid"></div>
-          <button type="submit" class="primary-button">결과 생성</button>
-        </form>
-
-        <section class="panel result-panel" aria-live="polite">
-          <div class="panel-heading">
-            <h2>결과</h2>
-            <button type="button" id="copy-button" class="secondary-button">복사</button>
-          </div>
-          <div id="result" class="empty-result">영역별 입력 후 결과 생성을 누르면 작성 또는 검토 결과가 표시됩니다.</div>
-        </section>
+      <section class="panel panel--result" aria-labelledby="result-title">
+        <div class="result-header">
+          <h2 id="result-title">결과</h2>
+          <span id="char-badge" class="badge">0자</span>
+        </div>
+        <div id="result" class="result-empty">입력 후 결과 생성을 누르면 작성 또는 검토 결과가 표시됩니다.</div>
       </section>
     </main>
 
-    <footer class="excel-footer">
-      <a class="secondary-button" href="/api/excel/template">엑셀 양식 다운로드</a>
-      <label class="secondary-button upload-button">
-        엑셀 업로드·일괄처리
-        <input id="excel-upload" type="file" accept=".xlsx" hidden />
-      </label>
-      <small>FastAPI 백엔드 사용 시 `/api/excel/*` 엔드포인트와 연동됩니다.</small>
+    <footer>
+      <p>본 도구는 교사의 검토를 보조합니다. 최종 입력 전 NEIS와 시도교육청 지침을 반드시 확인하세요.</p>
     </footer>
 
     <script src="script.js"></script>
