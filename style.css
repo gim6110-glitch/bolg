@@ -1,0 +1,70 @@
+:root {
+  --navy: #1f3864;
+  --blue: #2e5496;
+  --red: #c00000;
+  --orange: #e07000;
+  --border: #d9e2f1;
+  --bg: #f5f7fb;
+  --text: #172033;
+  --muted: #667085;
+  --high-bg: #ffd6d6;
+  --medium-bg: #fff0cc;
+  --yellow-bg: #fff2cc;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  background: linear-gradient(180deg, #eaf1ff 0, var(--bg) 340px);
+}
+button, input, textarea, select { font: inherit; }
+.app-header { max-width: 1040px; margin: 0 auto; padding: 44px 20px 22px; text-align: center; }
+.eyebrow { color: var(--blue); font-weight: 900; margin: 0 0 8px; }
+h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.04em; }
+.app-header p:last-child { color: var(--muted); line-height: 1.7; }
+.app-shell { max-width: 1180px; margin: 0 auto; padding: 0 20px 110px; }
+.toolbar { display: grid; gap: 14px; margin-bottom: 18px; }
+.mode-toggle, .tab-bar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.mode-toggle button, .tab-bar button, .secondary-button, .primary-button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: white;
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+  text-decoration: none;
+}
+.mode-toggle button.is-active, .tab-bar button.is-active, .primary-button { background: var(--navy); color: white; border-color: var(--navy); }
+.workspace { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 22px; align-items: start; }
+.panel { background: rgba(255,255,255,.95); border: 1px solid var(--border); border-radius: 26px; padding: 24px; box-shadow: 0 18px 45px rgba(31,56,100,.12); }
+.panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+.panel-heading h2 { margin: 0 0 6px; }
+.panel-heading p { margin: 0; color: var(--muted); line-height: 1.5; }
+.limit-badge { white-space: nowrap; border-radius: 999px; padding: 8px 12px; background: #eaf1ff; color: var(--blue); font-weight: 900; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { display: grid; gap: 8px; font-weight: 850; }
+.field.full { grid-column: 1 / -1; }
+.field em { color: var(--red); font-style: normal; font-size: .86rem; }
+input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 14px; padding: 12px 13px; background: white; color: var(--text); }
+textarea { min-height: 118px; resize: vertical; line-height: 1.6; }
+.primary-button { width: 100%; margin-top: 18px; }
+.secondary-button { display: inline-flex; align-items: center; justify-content: center; background: #eaf1ff; color: var(--blue); border-color: #c9daf8; }
+.empty-result { min-height: 280px; display: grid; place-items: center; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 18px; padding: 24px; }
+.result-card { display: grid; gap: 16px; }
+.generated-text, .original-text { border: 1px solid var(--border); border-radius: 18px; background: #f8fbff; padding: 16px; line-height: 1.8; white-space: pre-wrap; }
+.char-counter strong { display: flex; justify-content: space-between; color: var(--blue); }
+.char-counter.over strong { color: var(--red); }
+.track { height: 14px; border-radius: 999px; background: #e6ecf6; overflow: hidden; margin-top: 8px; }
+.bar { height: 100%; background: var(--blue); border-radius: inherit; }
+.char-counter.warn .bar { background: var(--orange); }
+.char-counter.over .bar { background: var(--red); }
+.badge-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.excluded-badge { background: var(--yellow-bg); border-radius: 999px; padding: 8px 12px; }
+.violation { border-left: 5px solid var(--orange); background: var(--medium-bg); border-radius: 14px; padding: 14px; margin: 8px 0; }
+.violation.high { border-color: var(--red); background: var(--high-bg); }
+.excel-footer { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 999px; background: rgba(255,255,255,.97); box-shadow: 0 12px 30px rgba(31,56,100,.18); }
+.excel-footer small { color: var(--muted); }
+@media (max-width: 900px) { .workspace, .field-grid { grid-template-columns: 1fr; } .excel-footer { position: static; transform: none; flex-direction: column; border-radius: 22px; margin: 20px; } }
