@@ -20,12 +20,11 @@ export const FIELD_CONFIG = {
   ],
   동아리활동: [
     { name: '동아리명', label: '동아리명', type: 'text', required: true },
-    { name: '결과물', label: '결과물', type: 'textarea', required: false },
     { name: '학생평가', label: '학생평가', type: 'textarea', required: true },
-    { name: '역할및기여', label: '학생의 역할 및 기여', type: 'textarea', required: false },
-    { name: '협업행동', label: '협업 과정에서의 구체적 행동', type: 'textarea', required: false },
-    { name: '성장변화', label: '역량의 성장 및 변화', type: 'textarea', required: false },
-    { name: '심화탐구', label: '심화 탐구 활동', type: 'textarea', required: false },
+    { name: '역할', label: '역할', type: 'textarea', required: false },
+    { name: '협업', label: '협업', type: 'textarea', required: false },
+    { name: '성장', label: '성장', type: 'textarea', required: false },
+    { name: '심화탐구', label: '심화탐구', type: 'textarea', required: false },
   ],
   진로활동: [
     { name: '희망분야', label: '희망분야', type: 'text', required: true },
