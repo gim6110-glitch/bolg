@@ -7,94 +7,72 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#1F3864;--blue:#2E5496;--bl:#D9E1F2;
-  --red:#C00000;--rl:#FCE4E4;--or:#E07000;
-  --yl:#FFF2CC;--gr:#F4F6FA;--bd:#D0D7E3;
-  --tx:#1A1A2E;--su:#5A6070;--g2:#2E7D32;--gl:#E8F5E9;
-}
+:root{--navy:#1F3864;--blue:#2E5496;--bl:#D9E1F2;--red:#C00000;--rl:#FCE4E4;--or:#E07000;--purple:#7B1FA2;--pl:#F3E5F5;--yl:#FFF2CC;--gr:#F4F6FA;--bd:#D0D7E3;--tx:#1A1A2E;--su:#5A6070;--g2:#2E7D32;--gl:#E8F5E9}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--gr);color:var(--tx);font-size:13px;line-height:1.6}
-/* 헤더 */
 header{background:var(--navy);color:#fff;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-header h1{font-size:15px;font-weight:700}
-header p{font-size:10px;opacity:.65;margin-top:1px}
-.hb{display:flex;gap:7px}.hbtn{font-size:11px;padding:5px 11px;border-radius:14px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer}.hbtn:hover{background:rgba(255,255,255,.22)}.hbtn.on{background:#1a6b3c;border-color:#2d9e5f}
-/* 모드 선택 - 가장 중요 */
-.mode-select{background:#fff;border-bottom:3px solid var(--bl);padding:0 22px;display:flex;gap:0}
+header h1{font-size:15px;font-weight:700}header p{font-size:10px;opacity:.65;margin-top:1px}
+.hb{display:flex;gap:7px;align-items:center}
+.hbtn{font-size:11px;padding:5px 11px;border-radius:14px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer}.hbtn:hover{background:rgba(255,255,255,.22)}.hbtn.on{background:#1a6b3c;border-color:#2d9e5f}
+.prov-badge{font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.2);color:#fff}
+.mode-select{background:#fff;border-bottom:3px solid var(--bl);padding:0 22px;display:flex}
 .mode-tab{padding:13px 28px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;color:var(--su);border-bottom:4px solid transparent;margin-bottom:-3px}
 .mode-tab.on.write{color:var(--blue);border-bottom-color:var(--blue)}
-.mode-tab.on.review{color:var(--red);border-bottom-color:var(--red)}
-/* 영역 탭 */
-.area-tabs{background:#F8F9FC;border-bottom:2px solid var(--bl);display:flex;padding:0 22px;gap:0;overflow-x:auto}
+.mode-tab.on.review{color:var(--purple);border-bottom-color:var(--purple)}
+.area-tabs{background:#F8F9FC;border-bottom:2px solid var(--bl);display:flex;padding:0 22px;overflow-x:auto}
 .atab{padding:9px 16px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--su);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
 .atab.on{color:var(--navy);border-bottom-color:var(--blue);font-weight:700}
-/* 테이블 */
 .tbl-wrap{overflow-x:auto;padding:16px 22px 90px}
 table{border-collapse:collapse;min-width:100%;background:#fff;border-radius:8px;box-shadow:0 2px 10px rgba(31,56,100,.09);overflow:hidden}
 th{background:var(--navy);color:#fff;padding:9px 10px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap}
-th.sh{background:var(--blue)}
-th.rh{background:#7B1FA2}
+th.sh{background:var(--blue)}th.rh{background:var(--purple)}
 td{padding:6px 8px;border:1px solid var(--bd);vertical-align:top;font-size:12px}
 td.num{text-align:center;background:#F8F9FC;font-weight:700;color:var(--navy);width:36px}
 tr:hover td:not(.num){background:#FAFBFF}
 td textarea,td input,td select{width:100%;border:none;background:transparent;font-family:inherit;font-size:12px;color:var(--tx);resize:none;outline:none;line-height:1.55}
-td textarea{min-height:58px}
-td textarea:focus,td input:focus{background:#FFFDE7}
-/* 결과 셀 - 작성 */
-td.wres{background:var(--gl);min-width:200px}
-td.wres textarea{color:var(--g2);min-height:75px}
-/* 결과 셀 - 검토 */
-td.rres{background:#F3E5F5;min-width:240px}
-.viol-sum{font-size:11px;line-height:1.7}
-.vh{color:var(--red);font-weight:700}.vm{color:var(--or);font-weight:700}.vl{color:var(--su)}
-.fix-box{margin-top:6px;background:#E8F5E9;border-radius:5px;padding:6px 8px;font-size:11px;color:var(--g2);line-height:1.65;white-space:pre-wrap;word-break:break-all}
-.sim-warn{margin-top:4px;background:var(--yl);border-radius:5px;padding:5px 8px;font-size:11px;color:#7A5500}
-/* 버튼 */
+td textarea{min-height:58px}td textarea:focus,td input:focus{background:#FFFDE7}
+td.wres{background:var(--gl);min-width:200px}td.wres textarea{color:var(--g2);min-height:75px}
+.cnt{font-size:10px;text-align:right;margin-top:2px}.cnt.ok{color:var(--blue)}.cnt.wn{color:var(--or);font-weight:700}.cnt.ov{color:var(--red);font-weight:700}
+.ldg{color:var(--blue);font-size:11px;padding:6px 0}.err-cell{color:var(--red);font-size:11px;padding:4px 0}
 .act{text-align:center;min-width:68px}
 .rb{display:block;width:100%;margin-bottom:3px;padding:3px 0;border-radius:4px;border:1px solid;font-size:11px;cursor:pointer;font-family:inherit;font-weight:700}
 .rb.gen{background:var(--blue);color:#fff;border-color:var(--blue)}.rb.gen:hover{background:var(--navy)}.rb.gen:disabled{background:#9AAAC5;border-color:#9AAAC5;cursor:not-allowed}
-.rb.rev{background:var(--red);color:#fff;border-color:var(--red)}.rb.rev:hover{background:#900}.rb.rev:disabled{background:#d49;border-color:#d49;cursor:not-allowed}
-.rb.add{background:#fff;color:var(--g2);border-color:var(--g2)}
-.rb.del{background:#fff;color:var(--red);border-color:var(--red)}
-/* 글자수 */
-.cnt{font-size:10px;text-align:right;margin-top:2px}
-.cnt.ok{color:var(--blue)}.cnt.wn{color:var(--or);font-weight:700}.cnt.ov{color:var(--red);font-weight:700}
-/* 로딩 */
-.ldg{color:var(--blue);font-size:11px;padding:6px 0}
-.err-cell{color:var(--red);font-size:11px;padding:4px 0}
-/* 하단 바 */
+.rb.rev{background:var(--purple);color:#fff;border-color:var(--purple)}.rb.rev:hover{background:#5a1577}.rb.rev:disabled{background:#b388c4;border-color:#b388c4;cursor:not-allowed}
+.rb.add{background:#fff;color:var(--g2);border-color:var(--g2)}.rb.del{background:#fff;color:var(--red);border-color:var(--red)}
 .bbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--bl);padding:9px 22px;display:flex;gap:9px;align-items:center;z-index:90;box-shadow:0 -2px 10px rgba(0,0,0,.08);flex-wrap:wrap}
 .bbar span{font-size:11px;color:var(--su)}
 .bb{padding:7px 13px;border-radius:6px;border:none;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}
 .bb-p{background:var(--blue);color:#fff}.bb-p:hover{background:var(--navy)}.bb-p:disabled{background:#9AAAC5;cursor:not-allowed}
-.bb-r{background:var(--red);color:#fff}.bb-r:hover{background:#900}.bb-r:disabled{background:#d49;cursor:not-allowed}
+.bb-r{background:var(--purple);color:#fff}.bb-r:hover{background:#5a1577}.bb-r:disabled{background:#b388c4;cursor:not-allowed}
 .bb-s{background:#fff;color:var(--blue);border:2px solid var(--blue)}.bb-s:hover{background:var(--bl)}
 .bb-g{background:#fff;color:var(--g2);border:2px solid var(--g2)}
 #prog{font-size:12px;color:var(--blue);font-weight:700}
-/* 모달 */
-.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
-.mbg.open{display:flex}
-.mdl{background:#fff;border-radius:12px;padding:22px;width:440px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,.18)}
-.mdl h2{font-size:14px;color:var(--navy);margin-bottom:11px}
-.mdl p{font-size:12px;color:var(--su);margin-bottom:9px;line-height:1.7}
-.fi{margin-bottom:9px}
-.fi label{display:block;font-size:11px;font-weight:700;color:var(--navy);margin-bottom:3px}
-.fi input,.fi textarea,.fi select{width:100%;padding:7px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:12px}
-.fi input:focus{outline:none;border-color:var(--blue)}
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}.mbg.open{display:flex}
+.mdl{background:#fff;border-radius:12px;padding:22px;width:460px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.mdl h2{font-size:14px;color:var(--navy);margin-bottom:11px}.mdl p{font-size:12px;color:var(--su);margin-bottom:9px;line-height:1.7}
+.fi{margin-bottom:9px}.fi label{display:block;font-size:11px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.fi input,.fi select{width:100%;padding:7px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:12px}.fi input:focus{outline:none;border-color:var(--blue)}
 .mbs{display:flex;gap:7px;margin-top:12px}
 .mb{padding:7px 14px;border-radius:6px;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .mb-p{background:var(--blue);color:#fff}.mb-s{background:#fff;color:var(--blue);border:2px solid var(--blue)}.mb-d{background:#fff;color:var(--red);border:2px solid var(--red)}
-/* 토스트 */
-.toast{position:fixed;top:60px;right:16px;background:var(--navy);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none}
-.toast.show{opacity:1}
-.ntc{padding:7px 12px;border-radius:6px;font-size:11px;margin-bottom:9px;display:flex;gap:6px}
-.ntc.i{background:var(--bl);color:var(--navy)}.ntc.w{background:var(--yl);color:#7A5500}.ntc.e{background:var(--rl);color:var(--red)}
+.toast{position:fixed;top:60px;right:16px;background:var(--navy);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none}.toast.show{opacity:1}
+.ntc{padding:7px 12px;border-radius:6px;font-size:11px;margin-bottom:9px;display:flex;gap:6px}.ntc.i{background:var(--bl);color:var(--navy)}.ntc.w{background:var(--yl);color:#7A5500}
+/* 검토 결과 셀 */
+td.rcell{background:#FCFAFE;min-width:300px;max-width:380px}
+.rv-score{font-size:12px;font-weight:700;padding:4px 8px;border-radius:5px;display:inline-block;margin-bottom:6px}
+.rv-score.bad{background:var(--rl);color:var(--red)}.rv-score.warn{background:#FFF0CC;color:var(--or)}.rv-score.good{background:var(--gl);color:var(--g2)}
+.rv-card{border-radius:6px;padding:7px 9px;margin-bottom:5px;border-left:3px solid;font-size:11px}
+.rv-card.h{background:var(--rl);border-color:var(--red)}.rv-card.m{background:#FFF5E6;border-color:var(--or)}.rv-card.l{background:#F5F5F5;border-color:#999}
+.rv-cat{font-weight:700;font-size:10px;margin-bottom:2px}.rv-cat.h{color:var(--red)}.rv-cat.m{color:var(--or)}.rv-cat.l{color:var(--su)}
+.rv-q{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-size:11px}
+.rv-fix{margin-top:8px;background:var(--gl);border-radius:6px;padding:8px;font-size:11px;color:var(--g2);line-height:1.7;white-space:pre-wrap;word-break:break-all}
+.rv-fix-label{font-size:10px;font-weight:700;color:var(--g2);margin-bottom:3px}
 </style>
 </head>
 <body>
 <header>
   <div><h1>학교생활기록부 작성·검토 도우미</h1><p>2026학년도 기재요령 기준 · 고등학교 · 2015 개정 교육과정</p></div>
   <div class="hb">
+    <span class="prov-badge" id="provBadge">Claude</span>
     <button class="hbtn" id="apiBtn" onclick="openM('apiM')">🔑 API 키</button>
     <button class="hbtn" onclick="openM('impM')">📂 엑셀 불러오기</button>
   </div>
@@ -102,39 +80,39 @@ td.rres{background:#F3E5F5;min-width:240px}
 <div class="toast" id="toast"></div>
 
 <!-- API 모달 -->
-<div class="mbg" id="apiM">
-  <div class="mdl">
-    <h2>🔑 Claude API 키 설정</h2>
-    <p>키는 이 브라우저에만 저장됩니다.<br>발급: <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);font-weight:700">console.anthropic.com</a> → API Keys → Create Key</p>
-    <div class="fi"><label>Claude API 키 (sk-ant-...)</label><input type="password" id="ki" placeholder="sk-ant-api03-..."></div>
-    <div id="ks" style="font-size:11px;margin-bottom:6px"></div>
-    <div class="mbs">
-      <button class="mb mb-p" onclick="saveKey()">저장</button>
-      <button class="mb mb-d" onclick="clearKey()">삭제</button>
-      <button class="mb mb-s" onclick="closeM('apiM')">닫기</button>
-    </div>
+<div class="mbg" id="apiM"><div class="mdl">
+  <h2>🔑 AI 제공자 및 API 키 설정</h2>
+  <p>아래에서 AI를 하나 선택하고 해당 키를 입력하세요. 키는 이 브라우저에만 저장됩니다.</p>
+  <div class="fi"><label>AI 제공자 선택</label>
+    <select id="provSel" onchange="onProvChange()">
+      <option value="claude">Claude (Anthropic)</option>
+      <option value="openai">ChatGPT (OpenAI)</option>
+      <option value="gemini">Gemini (Google)</option>
+    </select>
   </div>
-</div>
+  <div class="fi"><label id="keyLabel">Claude API 키</label><input type="password" id="ki" placeholder="키 입력"></div>
+  <p style="font-size:11px" id="keyGuide"></p>
+  <div id="ks" style="font-size:11px;margin-bottom:6px"></div>
+  <div class="mbs">
+    <button class="mb mb-p" onclick="saveKey()">저장</button>
+    <button class="mb mb-d" onclick="clearKey()">현재 키 삭제</button>
+    <button class="mb mb-s" onclick="closeM('apiM')">닫기</button>
+  </div>
+</div></div>
 
 <!-- 엑셀 불러오기 모달 -->
-<div class="mbg" id="impM">
-  <div class="mdl">
-    <h2>📂 엑셀 양식 불러오기</h2>
-    <div class="ntc i">ℹ️ 기존 생활기록부_양식.xlsx 그대로 업로드 가능합니다.</div>
-    <div class="fi"><label>엑셀 파일 (.xlsx)</label><input type="file" id="impF" accept=".xlsx,.xls"></div>
-    <div class="mbs">
-      <button class="mb mb-p" onclick="importXL()">불러오기</button>
-      <button class="mb mb-s" onclick="closeM('impM')">닫기</button>
-    </div>
-  </div>
-</div>
+<div class="mbg" id="impM"><div class="mdl">
+  <h2>📂 엑셀 불러오기</h2>
+  <div class="ntc i" id="impNotice">ℹ️ 작성용 양식을 불러옵니다.</div>
+  <div class="fi"><label>엑셀 파일 (.xlsx)</label><input type="file" id="impF" accept=".xlsx,.xls"></div>
+  <div class="mbs"><button class="mb mb-p" onclick="importXL()">불러오기</button><button class="mb mb-s" onclick="closeM('impM')">닫기</button></div>
+</div></div>
 
-<!-- 모드 선택 -->
+<!-- 모드 -->
 <div class="mode-select">
   <button class="mode-tab on write" id="mW" onclick="setMode('write')">✍️ 작성 모드</button>
   <button class="mode-tab review" id="mR" onclick="setMode('review')">🔍 검토 모드</button>
 </div>
-
 <!-- 영역 탭 -->
 <div class="area-tabs">
   <button class="atab on" onclick="setTab(0)">자율활동</button>
@@ -143,7 +121,6 @@ td.rres{background:#F3E5F5;min-width:240px}
   <button class="atab" onclick="setTab(3)">세특</button>
   <button class="atab" onclick="setTab(4)">행발</button>
 </div>
-
 <div class="tbl-wrap"><div id="tbl"></div></div>
 
 <!-- 하단 바 -->
@@ -159,324 +136,165 @@ td.rres{background:#F3E5F5;min-width:240px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ===== 상태 =====
-let apiKey=localStorage.getItem('ck')||'';
-let mode='write', tabIdx=0;
+let provider=localStorage.getItem('prov')||'claude';
+let keys={claude:localStorage.getItem('k_claude')||'',openai:localStorage.getItem('k_openai')||'',gemini:localStorage.getItem('k_gemini')||''};
+let mode='write',tabIdx=0;
 const TABS=['자율활동','진로활동','동아리활동','세특','행발'];
 const MAX={자율활동:500,진로활동:500,동아리활동:500,세특:350,행발:300};
+const PROV_NAME={claude:'Claude',openai:'ChatGPT',gemini:'Gemini'};
+const KEY_GUIDE={claude:'발급: console.anthropic.com → API Keys',openai:'발급: platform.openai.com → API keys',gemini:'발급: aistudio.google.com/app/apikey'};
 
 // ===== 데이터 =====
 const data={자율활동:[],진로활동:[],동아리활동:[],세특:[],행발:[]};
 function mkRow(tab,no){
-  const b={no,wResult:'',rResult:null,status:''};
-  if(tab==='자율활동') return{...b,학생특성:'',활동1:'',결과물1:'',활동2:'',결과물2:'',활동3:'',결과물3:''};
-  if(tab==='진로활동') return{...b,희망분야:'',활동1:'',결과물1:'',활동2:'',결과물2:'',활동3:'',결과물3:''};
-  if(tab==='동아리활동') return{...b,참여활동:''};
-  if(tab==='세특') return{...b,과목명:'',과제:'',학생평가:'',성취수준:'중'};
-  if(tab==='행발') return{...b,담임교사종합의견:''};
+  const b={no,wResult:'',rText:'',rResult:null,status:''};
+  if(tab==='자율활동')return{...b,학생특성:'',활동1:'',결과물1:'',활동2:'',결과물2:'',활동3:'',결과물3:''};
+  if(tab==='진로활동')return{...b,희망분야:'',활동1:'',결과물1:'',활동2:'',결과물2:'',활동3:'',결과물3:''};
+  if(tab==='동아리활동')return{...b,참여활동:''};
+  if(tab==='세특')return{...b,과목명:'',과제:'',학생평가:'',성취수준:'중'};
+  if(tab==='행발')return{...b,담임교사종합의견:''};
 }
 TABS.forEach(t=>{for(let i=1;i<=5;i++)data[t].push(mkRow(t,i));});
 
-// ===== 프롬프트 =====
-const COM_W=`당신은 2026학년도 고등학교 학교생활기록부 작성 전문 보조자입니다.
-교사가 직접 관찰·평가한 사실에 근거하여 학생부 문장을 완성합니다.
-
-[절대 금지]
-가.공인어학시험(TOEIC·TOEFL·TEPS·HSK·JPT·JLPT·DELF 등) 참여·성적·수상
-나.교내·외 대회 참여·성적·수상 / '대회' 단어 자체 (단순 행사로 명칭 변경도 금지)
-다.교외 기관 교외상(표창장·감사장·공로상)
-라.교내·외 인증시험 참여·성적
-마.모의고사·전국연합학력평가 성적
-바.논문 투고·등재·학회 발표
-사.도서 출간 / 아.지식재산권 출원·등록
-자.해외 어학연수·활동실적
-차.부모·친인척 사회·경제적 지위 암시
-카.대학명·기관명·기업명·상호명·강사명·학교명·재단명·축제명·별칭 등 학교 유추 내용
-
-[형식]
-명사형 종결만 (~함.~음.~임.~을 보임.)
-평서형·경어체 금지 (~했다.~합니다.)
-특수문자·번호매기기(①②,1.2.,-*) 금지. 줄글만.
-주어 지칭 금지('본 학생은' 등). 미래예측 금지.
-한글 원칙. 허용 영문: AI·IT·SNS·PPT·CEO 등 일반화 명사, 고유명사, 단위
-
-[날짜·내용 핵심 원칙]
-※날짜 나열 지양: (2026.04.08.) 같은 구체적 날짜를 문장에 나열하지 않음.
-  참여도·진보의 정도·태도 변화·개별 특성 중심으로 자연스럽게 서술.
-※학생 작성물 그대로 인용 금지: 동료평가서·자기평가서·수업산출물·소감문·독후감은
-  참고만 하고, 학생이 쓴 표현을 그대로 옮기지 않고 교사 관찰 관점으로 재서술.
-교사 직접 관찰·평가 사실에만 근거. 추측·창작·과장 금지.
-타 영역 내용 혼입 금지(글자수 초과를 이유로 타 영역 전가 금지).
-단순 나열 지양. 학생 개별 특성·성장·변화가 드러나도록.`;
-
-const COM_R=`당신은 2026학년도 학교생활기록부 기재요령 전문 검토관입니다.
-길라잡이 현장점검 기준으로 학생부 문장을 정밀 검토합니다.
-
-[공통 절대 금지 가~카]
-가.공인어학시험(TOEIC·TOEFL·TEPS·HSK·JPT·JLPT·DELF 등) 참여·성적·수상
-나.교내·외 대회 참여·성적·수상 / '대회' 단어 자체 (단순 행사로 명칭 변경도 금지)
-다.교외 기관 교외상(표창장·감사장·공로상)
-라.교내·외 인증시험 참여·성적
-마.모의고사·전국연합학력평가 성적
-바.논문 투고·등재·학회 발표 / 사.도서 출간 / 아.지식재산권 출원·등록
-자.해외 어학연수·활동실적
-차.부모·친인척 사회·경제적 지위 암시
-카.대학명·기관명·기업명·상호명·강사명·학교명·재단명·축제명·별칭 등 학교 유추 내용
-
-[공통 형식 규칙]
-①명사형 종결어미: ~했다/~한다/~합니다/~되었다 등 평서형·경어체 금지
-②특수문자·번호매기기(①②,1.2.,-* 등) 금지
-③한글 원칙. 허용 영문: AI·IT·SNS·PPT·CEO 등 일반화 명사, 외국인 성명, 고유명사, 단위. 그 외 영문·한자 금지
-④주어 지칭 금지('본 학생은','이 학생은', 학생 이름)
-⑤미래예측 금지('향후 발전이 기대됨','잠재력이 무궁함' 등)
-⑥개인정보(이름·학번·주민번호·연락처) 금지
-
-[공통 내용 규칙]
-①날짜 나열: (2026.04.08.) 같은 구체적 날짜를 나열했는가? → 지양 대상(참여도·태도 변화 중심으로 재서술 필요)
-②작성 근거: 교사 직접 관찰·평가만. 학생 작성물(동료평가서·자기평가서·수업산출물·소감문·독후감)을 그대로 인용했는가? → 교사 관찰 관점으로 재서술 필요
-③AI 생성물 그대로 입력 금지
-④허위·과장 금지
-⑤타 영역 혼입 금지 (글자수 초과 이유 타 영역 전가 금지)
-⑥단순 나열 지양: 개별 특성 드러나지 않는 활동 나열 금지`;
+// ===== 작성 프롬프트 =====
+const COM_W=`당신은 2026학년도 고등학교 학교생활기록부 작성 전문 보조자입니다. 교사가 직접 관찰·평가한 사실에 근거합니다.
+[절대 금지] 가.공인어학시험 나.교내외 대회·수상('대회' 단어 자체 금지) 다.교외상 라.인증시험 마.모의고사·전국연합 성적 바.논문 사.도서출간 아.지식재산권 자.해외활동 차.부모 사회경제적 지위 카.대학명·기관명·기업명·상호명·강사명·학교명·재단명·축제명
+[형식] 명사형 종결만(~함.~음.~임.~을 보임.). 평서형·경어체 금지. 특수문자·번호매기기 금지. 주어지칭('본 학생은') 금지. 미래예측 금지. 한글 원칙(허용 영문:AI·IT·SNS 등).
+[★날짜 절대 금지] (2026.04.08.) 같은 구체적 날짜·괄호 날짜를 문장에 절대 쓰지 않음. 교육명에 날짜를 붙이지 말 것. 참여도·태도 변화·개별 특성 중심으로 서술.
+[★인용 금지] 학생 작성물(소감문·자기평가서 등)을 그대로 옮기지 말고 교사 관찰 관점으로 재서술.
+교사 관찰·평가 사실에만 근거. 추측·창작·과장 금지. 타 영역 혼입 금지. 단순 나열 지양.`;
 
 const AREA_W={
-자율활동:`[영역]자율활동(2015개정)최대500자
-20년경력 담임교사 관점. 400~500자 한 문단.
-종결:~드러냄.~발휘함.~보임.~기여함.~변화함.~확인됨.
-흐름:배경→역할→구체행동→문제해결→공동체영향→관찰변화
-추상평가 금지. 실제 행동으로 역량 표현.
-임원:입력된 직책·재임기간만(추정금지). 시작일:2026.03.02.또는2026.03.16.
-이수시간 0이면 사유 기재(예:"순회교육으로 활동 내용이 없음.").
-학교밖 교육기관명 금지 → '학교밖교육기관(기관유형)'으로 통칭.
-청소년단체·자율동아리는 명칭만(자율동아리 소개 30자 이내).
-자율탐구활동:산출물 실적(제목·연구주제·참여인원·소요시간) 나열 금지, 학생 특기사항만.
-교과세특·동아리·진로·봉사 내용 혼입 금지.`,
-
-진로활동:`[영역]진로활동(2015개정)최대500자
-20년경력 담임교사 관점. 400~500자 한 문단.
-종결:~탐색함.~분석함.~구체화함.~발표함.~드러냄.~확인됨.
-흐름:초기관심→탐색행동→비교분석→상담활용→진로인식변화
-모든 학생 대상. 진로희망(희망분야)이 드러나도록. 미결정시'진로탐색 중임.' 포함.
-이수시간 0이면 사유 기재(예:"순회교육으로 활동 내용이 없음.").
-직업기초능력평가 응시했으면 기재(예:"직업기초능력평가 본평가에 참여함.").
-진로검사:결과 나열금지. 학생이 결과를 해석·비교한 과정만.
-교과성적·동아리·자율·봉사 내용 혼입 금지.`,
-
-동아리활동:`[영역]동아리활동(2015개정)최대500자
-동아리 담당교사 관점. 430~500자(부족하면 간결하게).
-종결:~분석함.~제작함.~수정함.~기여함.~드러냄.~발휘함.
-동아리명·이수시간·특기사항 모두 필수. 이수시간 0이면 사유 기재.
-핵심활동 1~2개 선별. 배경→역할→행동→문제해결→결과 흐름.
-'적극참여' 등 추상평가 금지. 실제 행동만.
-정규교육과정 외 청소년단체·학교스포츠클럽은 명칭만(특기사항 불가).
-동아리 단위 '도우미' 봉사 실적 인정 불가.
-심화탐구:실제 근거 있을 때만. 없으면 창작금지.`,
-
-세특:`[영역]과목별 세부능력 및 특기사항(2015개정)공백포함300~350자
-20년경력 교사 관점(입력 과목 기준).
-종결:~함.~임.~음.
-흐름:지식·기능→수행과정·문제해결→교과역량→종합판단.
-성취기준·성취수준 근거로 학생 개인 성취과정·특성 명료히.
-성취수준 직접판정('상 수준임','도달함') 금지. 수행 과정에서 자연스럽게.
-수업 활동 단순 나열·성취기준에 명시된 지식 단순 서술 지양.
-기재불가:교내외 대회·방과후학교·소논문(연구보고서 실적)·MOOC·K-MOOC·KOCW·창체 체험활동.
- ※단,소논문은 수학과제탐구·사회문제탐구·융합과학탐구·과학과제연구·사회과제연구 과목은 실적 제외하고 특기사항 기재 가능.
-인성·생활태도보다 학업역량·문제해결·자기주도탐구 중심.`,
-
-행발:`[영역]행동특성 및 종합의견(2015개정)최대300자(엄수)
-20년경력 담임교사 관점. 260~300자.
-종결:~드러냄.~실천함.~기여함.~발휘함.~보임.~확인됨.
-학년 전체 지속·반복 관찰된 핵심 특성 2~3개 중심. 전부 나열금지.
-추상평가 금지. 실제 행동으로. 교육적 관점에서 성장 지원.
-부정적 행동특성은 낙인 금지, 구체적 행동으로.
-교과 수행평가 세부내용 그대로 이전 금지.
-타 항목(방과후 등) 내용 전가 금지.`
+자율활동:`[자율활동 최대500자] 담임교사 관점 400~500자 한 문단. 종결:~드러냄.~발휘함.~보임.~기여함.~변화함.~확인됨.
+흐름:배경→역할→구체행동→문제해결→공동체영향→관찰변화. 추상평가 금지.
+★여러 교육·행사를 날짜와 함께 나열하지 말 것. 핵심 1~2개를 골라 학생 행동 중심으로 깊이 있게.
+임원:입력된 직책·재임기간만. 이수시간0이면 사유 기재. 학교밖 교육기관명 금지. 자율탐구 산출물 실적 나열 금지.`,
+진로활동:`[진로활동 최대500자] 담임교사 관점 400~500자 한 문단. 종결:~탐색함.~분석함.~구체화함.~발표함.~드러냄.~확인됨.
+흐름:초기관심→탐색행동→비교분석→상담활용→진로인식변화. 진로희망 드러나도록. 미결정시'진로탐색 중임.'.
+직업기초능력평가 응시했으면 기재. 진로검사 결과 나열금지(해석·비교 과정만). 교과·동아리·자율·봉사 혼입금지.`,
+동아리활동:`[동아리활동 최대500자] 동아리 담당교사 관점 430~500자. 종결:~분석함.~제작함.~수정함.~기여함.~드러냄.~발휘함.
+동아리명·이수시간·특기사항 필수. 핵심활동 1~2개. 추상평가 금지. '도우미' 봉사실적 불가. 심화탐구는 근거 있을때만.`,
+세특:`[세특 공백포함300~350자] 교사 관점(입력과목). 종결:~함.~임.~음.
+흐름:지식·기능→수행과정·문제해결→교과역량→종합판단. 성취수준 직접판정('상 수준임') 금지.
+단순 나열·지식 단순서술 지양. 기재불가:대회·방과후·소논문·MOOC·창체. 인성보다 학업역량 중심.`,
+행발:`[행발 최대300자 엄수] 담임교사 관점 260~300자. 종결:~드러냄.~실천함.~기여함.~발휘함.~보임.~확인됨.
+지속 관찰된 핵심특성 2~3개 중심. 추상평가 금지. 부정행동 낙인금지. 교과 수행평가 세부 이전금지. 타 항목 전가금지.`
 };
+const W_SCH=`JSON만 출력(코드펜스 없이):{"mode":"작성","생성문장":"날짜 없는 완성 문장","글자수":숫자,"제외한항목":[{"내용":"제외내용","사유":"이유"}]}`;
+
+// ===== 검토 프롬프트 (작성과 완전 분리, 점검 집중) =====
+const COM_R=`당신은 2026학년도 학교생활기록부 기재요령 길라잡이 전문 검토관입니다.
+이미 작성된 학생부 문장을 받아, 길라잡이 기준 위반만 정밀하게 찾아내는 것이 임무입니다. 문장을 새로 창작하지 말고, 위반 검출과 최소 교정에 집중합니다.
+
+[검출 1순위 - 높음(반드시 삭제)]
+·절대금지 가~카: 공인어학시험·대회/수상('대회'단어)·교외상·인증시험·모의고사성적·논문·도서출간·지식재산권·해외활동·부모지위·대학명/기관명/기업명/상호명/강사명/학교명/재단명/축제명
+·개인정보: 이름·학번·주민번호·연락처
+[검출 2순위 - 중간(수정 필요)]
+·★날짜 나열: (2026.04.08.) 같은 구체적 날짜를 문장에 넣었는가 → 삭제 권고
+·종결어미: ~했다/~한다/~합니다/~되었다 등 평서형·경어체 (명사형이어야 함)
+·특수문자·번호매기기
+·허용 외 영문·한자
+·글자수 초과
+·타 영역 내용 혼입
+·학생 작성물 그대로 인용(교사 관점 재서술 필요)
+·주어 지칭('본 학생은'), 미래예측('향후 발전 기대됨')
+[검출 3순위 - 낮음(품질 개선)]
+·단순 나열(여러 활동을 행동 없이 나열)
+·개별 특성·구체적 행동 부족
+·추상 평가('리더십 뛰어남' 등)`;
 
 const AREA_R={
-자율활동:`[자율활동 전용 점검항목]
-1.날짜 나열: (2026.04.08.) 같은 구체적 날짜를 나열했는가? → 지양(태도 변화·참여도 중심 재서술)
-2.임원 재임기간: 학급임원 시작일 2026.03.02.또는 2026.03.16. / 3학년:3월1일~졸업일. 직책·재임기간 구체 기재? 추정·생략 여부
-3.강사명·외부기관명·학교명·재단명·축제명·별칭 기재 여부 (금지)
-4.학교밖 교육기관명 기재 여부 → '학교밖교육기관(기관유형)' 통칭해야 함
-5.자율탐구활동: 산출물 실적(제목·연구주제·참여인원·소요시간) 나열 금지
-6.자율동아리: 동아리명만(소개 30자 이내). 청소년단체: 단체명·특기사항 모두 기재 불가
-7.이수시간 0: 사유 기재 확인("순회교육으로 활동 내용이 없음." 등)
-8.학생 작성 소감문·보고서 그대로 인용 여부 (교사 관찰 관점 재서술 필요)
-9.교과세특·동아리·진로·봉사 내용 혼입 여부`,
-
-진로활동:`[진로활동 전용 점검항목]
-1.날짜 나열 지양 여부
-2.진로희망(희망분야) 포함? 미결정시 "진로탐색 중임." 등 기재
-3.진로 특성 포함: 진로검사 결과 해석, 상담 결과, 관심분야, 의욕, 태도변화가 드러나는가?
-4.이수시간 0: 사유 기재 확인
-5.직업기초능력평가(직업계열): 응시했으면 특기사항에 기재 필수
-6.진로검사: 결과 단순 나열 금지(해석·비교 과정 필요)
-7.진로상담: 받은 사실보다 이후 탐색·선택·계획 반영 내용 중심인가?
-8.교과성적·동아리·자율·봉사 내용 혼입 여부
-9.학생 작성물 그대로 인용 여부 / 강사명·외부기관명 기재 여부`,
-
-동아리활동:`[동아리활동 전용 점검항목]
-1.날짜 나열 지양 여부
-2.동아리명·이수시간·특기사항 모두 기재? (모두 필수)
-3.이수시간 0: 사유 기재 확인
-4.정규교육과정 외 청소년단체: 단체명·특기사항 모두 기재 불가
-5.학교스포츠클럽(정규외): 클럽명만, 특기사항 불가
-6.자율동아리: 동아리명만(소개 30자 이내)
-7.동아리 단위 '도우미' 봉사 실적 기재 여부(인정 불가. 예:방송반 방송도우미)
-8.심화탐구: 실제 근거 없이 창작 여부
-9.대회명·수상실적·외부기관명 기재 여부 / 교과세특·자율·진로·봉사 혼입 여부
-10.학생 작성물 그대로 인용 여부`,
-
-세특:`[세특 전용 점검항목]
-1.기재 범위: 학생참여형 수업·수업연계 수행평가에서 교사 직접 관찰·평가한 내용만
-2.성취기준·성취수준 근거로 개인 성취과정·특성 명료히 드러나는가?
-3.수업활동 단순 나열 또는 성취기준에 명시된 지식 단순 서술 여부
-4.성취수준 직접 판정('상 수준임','우수한 성취수준','도달함') 금지
-5.기재 불가:
-  -교내외 대회 참여·성적·수상(단순 행사로 명칭 변경도 금지)
-  -K-MOOC·MOOC·KOCW
-  -방과후학교 활동
-  -연구보고서(소논문) 실적(제목·연구주제·참여인원·소요시간)
-   ※단,수학과제탐구·사회문제탐구·융합과학탐구·과학과제연구·사회과제연구 과목은 실적 제외하고 특기사항 기재 가능
-  -창의적 체험활동 체험활동 내용 혼입
-6.미참여 학생: 사유 기재("특이사항 없음." 형식)
-7.학생 작성물 그대로 인용 여부 / 글자수 350자 이내`,
-
-행발:`[행발 전용 점검항목]
-1.날짜 나열 지양 여부
-2.학년 전체 지속 관찰 행동특성으로 총체적 이해 가능한가?
-3.교육적 관점: 학생 성장 지원 관점인가?
-4.부정적 행동특성: 낙인·단정 표현 금지, 구체적 행동 누가기록 필요
-5.기재 금지: 방과후학교 등 다른 항목 내용 전가, 대회명·수상·자격증
-6.교과 수행평가 세부내용 그대로 이전 금지
-7.최대 글자수 300자(엄수, 2026 축소)
-8.미래예측 표현 금지`
+자율활동:`[자율활동 추가점검] 임원 재임기간 정확성 / 학교밖 교육기관명·강사명 / 자율탐구 산출물 실적 나열 / 이수시간0 사유 / 청소년단체·자율동아리 명칭만 / 여러 교육을 날짜와 함께 나열했는지(지양)`,
+진로활동:`[진로활동 추가점검] 진로희망 드러남 여부 / 직업기초능력평가 응시 기재 / 진로검사 결과 단순나열 / 교과·동아리·자율·봉사 혼입 / 이수시간0 사유`,
+동아리활동:`[동아리활동 추가점검] 동아리명·이수시간·특기사항 모두 기재 / '도우미' 봉사실적 / 청소년단체·학교스포츠클럽 명칭만 / 심화탐구 창작 / 대회명·수상`,
+세특:`[세특 추가점검] 성취수준 직접판정 표현 / 대회·방과후·소논문·MOOC 기재 / 창체 체험활동 혼입 / 단순 나열·지식 단순서술 / 글자수 350자`,
+행발:`[행발 추가점검] 300자 엄수(2026 축소) / 부정행동 낙인 / 방과후 등 타 항목 전가 / 교과 수행평가 세부 이전 / 미래예측 표현`
 };
-
-const W_SCH=`결과는 JSON만 출력(코드펜스 없이):
-{"mode":"작성","생성문장":"완성된 학생부 문장","글자수":숫자,"제외한항목":[{"내용":"제외내용","사유":"이유"}]}`;
-
-const R_SCH=`결과는 JSON만 출력(코드펜스 없이). 수정안 반드시 포함:
-{"mode":"검토","위반사항":[{"유형":"금지어(나)","심각도":"높음/중간/낮음","원문위치":"위반구절","수정제안":"한줄"}],"수정안":"교정된 전체 문장","글자수":숫자,"최대글자수":숫자,"초과여부":false,"유사도경고":null,"종합의견":"한줄요약"}`;
+const R_SCH=`JSON만 출력(코드펜스 없이). 입력 문장을 새로 창작하지 말고 위반만 검출하고 최소 교정:
+{"mode":"검토","위반사항":[{"유형":"날짜나열/금지어(나)/종결어미/단순나열 등","심각도":"높음/중간/낮음","원문위치":"문제된 구절(20자이내)","수정제안":"삭제 또는 구체적 수정방향"}],"수정안":"위반을 교정한 전체 문장","글자수":숫자,"종합의견":"핵심 문제 한줄"}`;
 
 // ===== API =====
-async function callClaude(sys,usr){
-  const r=await fetch('/.netlify/functions/claude',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system:sys,user:usr,apiKey:apiKey||''})
-  });
+async function callAI(sys,usr){
+  const r=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({provider,system:sys,user:usr,apiKey:keys[provider]||''})});
   const d=await r.json();
-  if(!r.ok) throw new Error(d.error||'API 오류 '+r.status);
+  if(!r.ok)throw new Error(d.error||'API 오류 '+r.status);
   return d.text;
 }
 function pJ(raw){
-  // 코드펜스 제거
   let s=raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-  // JSON 블록만 추출
-  const st=s.indexOf('{');const en=s.lastIndexOf('}');
-  if(st!==-1&&en!==-1) s=s.slice(st,en+1);
-  try{
-    return JSON.parse(s);
-  }catch(e){
-    // JSON이 잘린 경우 — 잘린 부분까지만 복구 시도
-    // 마지막 완전한 필드까지 살리고 강제 닫기
-    let fixed=s;
-    // 열린 문자열 닫기
-    const qc=(fixed.match(/"/g)||[]).length;
-    if(qc%2!==0) fixed+='"';
-    // 열린 배열/객체 닫기
-    let depth=0;
-    for(const c of fixed){if(c==='{')depth++;else if(c==='}')depth--;}
-    fixed+=']}'.repeat(0)+'}';
-    try{return JSON.parse(fixed);}catch{
-      // 복구 실패 시 기본 구조 반환
-      const isR=fixed.includes('"위반사항"');
-      if(isR) return{mode:'검토',위반사항:[],수정안:'응답이 너무 길어 잘렸습니다. 내용을 줄여 다시 시도해 주세요.',글자수:0,최대글자수:0,초과여부:false,유사도경고:null,종합의견:'응답 파싱 실패 — 재시도 필요'};
-      return{mode:'작성',생성문장:'응답이 너무 길어 잘렸습니다. 입력 내용을 줄여 다시 시도해 주세요.',글자수:0,제외한항목:[]};
+  const st=s.indexOf('{'),en=s.lastIndexOf('}');
+  if(st!==-1&&en!==-1)s=s.slice(st,en+1);
+  try{return JSON.parse(s)}catch(e){
+    let f=s;const qc=(f.match(/"/g)||[]).length;if(qc%2)f+='"';
+    let dp=0;for(const c of f){if(c==='{')dp++;else if(c==='}')dp--}f+='}'.repeat(Math.max(0,dp));
+    try{return JSON.parse(f)}catch{
+      if(s.includes('위반사항'))return{mode:'검토',위반사항:[],수정안:'응답이 잘렸습니다. 다시 시도해 주세요.',글자수:0,종합의견:'파싱 실패'};
+      return{mode:'작성',생성문장:'응답이 잘렸습니다. 다시 시도해 주세요.',글자수:0,제외한항목:[]};
     }
   }
 }
 
 // ===== 입력→텍스트 =====
 function r2t(tab,row){
-  const L=[];const a=(k,v)=>{if(v&&v.trim())L.push(`<${k}>\n${v.trim()}`);};
-  if(tab==='자율활동'){a('학생특성',row.학생특성);[1,2,3].forEach(n=>{a(`활동${n}`,row[`활동${n}`]);a(`결과물${n}`,row[`결과물${n}`]);});}
-  else if(tab==='진로활동'){a('희망분야',row.희망분야);[1,2,3].forEach(n=>{a(`활동${n}`,row[`활동${n}`]);a(`결과물${n}`,row[`결과물${n}`]);});}
-  else if(tab==='동아리활동'){a('참여활동',row.참여활동);}
-  else if(tab==='세특'){a('과목명',row.과목명);a('과제',row.과제);a('학생평가',row.학생평가);a('성취수준',row.성취수준);}
-  else if(tab==='행발'){a('담임교사종합의견',row.담임교사종합의견);}
+  const L=[];const a=(k,v)=>{if(v&&v.trim())L.push('<'+k+'>\n'+v.trim())};
+  if(tab==='자율활동'){a('학생특성',row.학생특성);[1,2,3].forEach(n=>{a('활동'+n,row['활동'+n]);a('결과물'+n,row['결과물'+n])})}
+  else if(tab==='진로활동'){a('희망분야',row.희망분야);[1,2,3].forEach(n=>{a('활동'+n,row['활동'+n]);a('결과물'+n,row['결과물'+n])})}
+  else if(tab==='동아리활동'){a('참여활동',row.참여활동)}
+  else if(tab==='세특'){a('과목명',row.과목명);a('과제',row.과제);a('학생평가',row.학생평가);a('성취수준',row.성취수준)}
+  else if(tab==='행발'){a('담임교사종합의견',row.담임교사종합의견)}
   return L.join('\n\n');
 }
+const AREA_LABEL={자율활동:'자율활동',진로활동:'진로활동',동아리활동:'동아리활동',세특:'과목별 세부능력 및 특기사항',행발:'행동특성 및 종합의견'};
 
-// ===== 생성 실행 =====
-async function doRow(tab,i,isReview){
-  const row=data[tab][i];
-  const txt=r2t(tab,row);
-  if(!txt) throw new Error('입력 내용이 없습니다.');
-  const MAX_C=MAX[tab];
-  const AREA_LABEL={자율활동:'자율활동',진로활동:'진로활동',동아리활동:'동아리활동',세특:'과목별 세부능력 및 특기사항',행발:'행동특성 및 종합의견'};
-  if(!isReview){
+// ===== 실행 =====
+async function doRow(tab,i){
+  const row=data[tab][i];const mx=MAX[tab];
+  if(mode==='write'){
+    const txt=r2t(tab,row);if(!txt)throw new Error('입력 내용이 없습니다.');
     const sys=COM_W+'\n\n'+AREA_W[tab];
-    const usr=`[작업:작성] 위 규칙을 모두 지켜 아래 입력 자료를 바탕으로 ${AREA_LABEL[tab]} 문장을 완성하세요.\n${W_SCH}\n\n### 입력 자료\n${txt}`;
-    const raw=await callClaude(sys,usr);
-    return pJ(raw);
+    const usr='[작업:작성] 위 규칙(특히 날짜 절대 금지)을 지켜 아래 입력으로 '+AREA_LABEL[tab]+' 문장을 완성하세요.\n'+W_SCH+'\n\n### 입력 자료\n'+txt;
+    return pJ(await callAI(sys,usr));
   } else {
+    const txt=row.rText;if(!txt||!txt.trim())throw new Error('검토할 문장이 없습니다.');
     const sys=COM_R+'\n\n'+AREA_R[tab];
-    const usr=`[작업:검토] 아래 학생부 문장을 위의 모든 기준으로 정밀 점검하세요.\n영역:${AREA_LABEL[tab]} / 최대글자수:${MAX_C}자\n${R_SCH}\n\n검토 대상 문장:\n"""${txt}"""`;
-    const raw=await callClaude(sys,usr);
-    return pJ(raw);
+    const usr='[작업:검토] 아래 '+AREA_LABEL[tab]+' 문장을 길라잡이 기준으로 점검하세요. 최대 '+mx+'자.\n새로 창작하지 말고 위반만 검출+최소 교정.\n'+R_SCH+'\n\n검토 대상:\n"""'+txt+'"""';
+    return pJ(await callAI(sys,usr));
   }
 }
 
-// ===== 단일 실행 =====
 async function genRow(i){
-  if(!apiKey){showT('🔑 API 키를 먼저 입력하세요.');openM('apiM');return;}
-  const tab=TABS[tabIdx];const row=data[tab][i];
-  const isR=mode==='review';
-  row.status='loading';row.wResult='';row.rResult=null;
-  refreshCell(tab,i);
-  const btn=document.getElementById(`gb${i}`);if(btn)btn.disabled=true;
-  try{
-    const j=await doRow(tab,i,isR);
-    if(!isR){row.wResult=j.생성문장||'';}
-    else{row.rResult=j;}
-    row.status='done';
-  }catch(e){row.wResult=e.message;row.rResult={error:e.message};row.status='error';}
-  refreshCell(tab,i);
-  if(btn)btn.disabled=false;
+  if(!keys[provider]){showT('🔑 '+PROV_NAME[provider]+' API 키를 입력하세요.');openM('apiM');return}
+  const tab=TABS[tabIdx],row=data[tab][i];
+  row.status='loading';row.wResult='';row.rResult=null;refreshCell(tab,i);
+  const b=document.getElementById('gb'+i);if(b)b.disabled=true;
+  try{const j=await doRow(tab,i);if(mode==='write')row.wResult=j.생성문장||'';else row.rResult=j;row.status='done'}
+  catch(e){if(mode==='write')row.wResult=e.message;else row.rResult={error:e.message};row.status='error'}
+  refreshCell(tab,i);if(b)b.disabled=false;
 }
 
-// ===== 일괄 =====
 async function batchAll(){
-  if(!apiKey){showT('🔑 API 키를 먼저 입력하세요.');openM('apiM');return;}
-  const tab=TABS[tabIdx];const rows=data[tab];
-  const isR=mode==='review';
-  const bW=document.getElementById('batchW');const bR=document.getElementById('batchR');
+  if(!keys[provider]){showT('🔑 '+PROV_NAME[provider]+' API 키를 입력하세요.');openM('apiM');return}
+  const tab=TABS[tabIdx],rows=data[tab];
+  const bW=document.getElementById('batchW'),bR=document.getElementById('batchR');
   if(bW)bW.disabled=true;if(bR)bR.disabled=true;
-  const prog=document.getElementById('prog');
-  let done=0;
+  const prog=document.getElementById('prog');let done=0;
   for(let i=0;i<rows.length;i++){
-    const txt=r2t(tab,rows[i]);
-    if(!txt){done++;continue;}
-    prog.textContent=`처리 중... ${i+1}/${rows.length}`;
-    rows[i].status='loading';rows[i].wResult='';rows[i].rResult=null;
-    refreshCell(tab,i);
-    try{
-      const j=await doRow(tab,i,isR);
-      if(!isR){rows[i].wResult=j.생성문장||'';}
-      else{rows[i].rResult=j;}
-      rows[i].status='done';
-    }catch(e){rows[i].wResult=e.message;rows[i].rResult={error:e.message};rows[i].status='error';}
+    const has=mode==='write'?r2t(tab,rows[i]):rows[i].rText;
+    if(!has||!has.trim()){done++;continue}
+    prog.textContent='처리 중... '+(i+1)+'/'+rows.length;
+    rows[i].status='loading';rows[i].wResult='';rows[i].rResult=null;refreshCell(tab,i);
+    try{const j=await doRow(tab,i);if(mode==='write')rows[i].wResult=j.생성문장||'';else rows[i].rResult=j;rows[i].status='done'}
+    catch(e){if(mode==='write')rows[i].wResult=e.message;else rows[i].rResult={error:e.message};rows[i].status='error'}
     refreshCell(tab,i);done++;
     if(i<rows.length-1)await new Promise(r=>setTimeout(r,1000));
   }
   if(bW)bW.disabled=false;if(bR)bR.disabled=false;
-  prog.textContent=`✅ ${done}건 ${isR?'검토':'생성'} 완료`;
-  showT(`✅ ${tab} ${done}건 ${isR?'검토':'생성'} 완료`);
+  prog.textContent='✅ '+done+'건 '+(mode==='review'?'검토':'생성')+' 완료';
+  showT('✅ '+tab+' '+done+'건 완료');
 }
 
-// ===== 렌더링 =====
+// ===== 렌더 =====
 function setMode(m){
   mode=m;
   document.getElementById('mW').classList.toggle('on',m==='write');
@@ -484,219 +302,195 @@ function setMode(m){
   document.getElementById('mR').classList.toggle('on',m==='review');
   document.getElementById('mR').classList.toggle('review',m==='review');
   document.getElementById('modeLabel').textContent=m==='write'?'✍️ 작성 모드':'🔍 검토 모드';
-  document.getElementById('modeLabel').style.color=m==='write'?'var(--blue)':'var(--red)';
+  document.getElementById('modeLabel').style.color=m==='write'?'var(--blue)':'var(--purple)';
   document.getElementById('batchW').style.display=m==='write'?'':'none';
   document.getElementById('batchR').style.display=m==='review'?'':'none';
+  document.getElementById('impNotice').textContent=m==='write'?'ℹ️ 작성용 양식을 불러옵니다.':'ℹ️ 검토할 문장이 담긴 엑셀을 불러옵니다.';
   render();
 }
+function setTab(i){tabIdx=i;document.querySelectorAll('.atab').forEach((el,j)=>el.classList.toggle('on',j===i));render()}
+function upd(tab,i,k,v){data[tab][i][k]=v}
+function addR(i){const t=TABS[tabIdx];data[t].splice(i+1,0,mkRow(t,i+2));data[t].forEach((r,j)=>r.no=j+1);render()}
+function delR(i){const t=TABS[tabIdx];if(data[t].length<=1){showT('최소 1행 필요');return}data[t].splice(i,1);data[t].forEach((r,j)=>r.no=j+1);render()}
+function refreshCell(tab,i){const el=document.getElementById('rc'+i);if(el)el.innerHTML=mode==='write'?renderW(data[tab][i],tab):renderR(data[tab][i],tab)}
 
-function setTab(i){
-  tabIdx=i;
-  document.querySelectorAll('.atab').forEach((el,j)=>el.classList.toggle('on',j===i));
-  render();
+// 작성 결과 셀
+function renderW(row,tab){
+  const mx=MAX[tab];
+  if(row.status==='loading')return'<div class="ldg">⏳ 생성 중...</div>';
+  if(row.status==='error')return'<div class="err-cell">❌ '+esc(row.wResult)+'</div>';
+  if(!row.wResult)return'<span style="color:#bbb;font-size:11px">생성 버튼을 누르세요</span>';
+  const c=row.wResult.length,p=Math.min(c/mx*100,100),cc=c>mx?'ov':c>mx*0.8?'wn':'ok';
+  return'<textarea style="min-height:75px;color:var(--g2);background:var(--gl)" onchange="upd(\''+tab+'\','+data[tab].indexOf(row)+',\'wResult\',this.value)">'+esc(row.wResult)+'</textarea><div class="cnt '+cc+'">'+c+'/'+mx+'자 '+(c>mx?'⚠️초과':'')+'</div>';
 }
-
-function upd(tab,i,k,v){data[tab][i][k]=v;}
-function addR(i){const tab=TABS[tabIdx];data[tab].splice(i+1,0,mkRow(tab,i+2));data[tab].forEach((r,j)=>r.no=j+1);render();}
-function delR(i){const tab=TABS[tabIdx];if(data[tab].length<=1){showT('최소 1행 필요');return;}data[tab].splice(i,1);data[tab].forEach((r,j)=>r.no=j+1);render();}
-
-function refreshCell(tab,i){
-  const el=document.getElementById(`rc${i}`);
-  if(el)el.innerHTML=renderRC(data[tab][i],tab);
-}
-
-function renderRC(row,tab){
-  const mx=MAX[tab];const isR=mode==='review';
-  if(row.status==='loading') return`<div class="ldg">⏳ ${isR?'검토':'생성'} 중...</div>`;
-  if(isR){
-    if(!row.rResult) return`<span style="color:#bbb;font-size:11px">검토 버튼을 누르세요</span>`;
-    if(row.rResult.error) return`<div class="err-cell">❌ ${esc(row.rResult.error)}</div>`;
-    const j=row.rResult;const vs=j.위반사항||[];
-    let html=`<div class="viol-sum">`;
-    if(!vs.length) html+=`<span style="color:var(--g2);font-weight:700">✅ 위반 없음</span>`;
-    else{
-      vs.forEach(v=>{
-        const cl=v.심각도==='높음'?'vh':v.심각도==='중간'?'vm':'vl';
-        const ic=v.심각도==='높음'?'🔴':'🟠';
-        html+=`<div class="${cl}">${ic} [${esc(v.유형)}] ${esc(v.원문위치||'')} → ${esc(v.수정제안||'')}</div>`;
-      });
-    }
-    html+=`</div>`;
-    if(j.수정안) html+=`<div class="fix-box">${esc(j.수정안)}<div class="cnt ${j.글자수>mx?'ov':j.글자수>mx*0.8?'wn':'ok'}">${j.글자수||0}/${mx}자 ${j.글자수>mx?'⚠️초과':''}</div></div>`;
-    if(j.유사도경고) html+=`<div class="sim-warn">⚠️ 유사도: ${esc(j.유사도경고)}</div>`;
-    if(j.종합의견) html+=`<div style="font-size:10px;color:var(--su);margin-top:4px">💬 ${esc(j.종합의견)}</div>`;
-    return html;
-  } else {
-    if(!row.wResult&&row.status!=='error') return`<span style="color:#bbb;font-size:11px">생성 버튼을 누르세요</span>`;
-    if(row.status==='error') return`<div class="err-cell">❌ ${esc(row.wResult)}</div>`;
-    const cnt=row.wResult.length;const pct=Math.min(cnt/mx*100,100);
-    const bc=cnt>mx?'ov':cnt>mx*0.8?'wn':'ok';
-    return`<textarea style="min-height:75px;color:var(--g2);background:var(--gl)" onchange="upd('${TABS[tabIdx]}',${data[TABS[tabIdx]].indexOf(row)},'wResult',this.value)">${esc(row.wResult)}</textarea><div class="cnt ${bc}">${cnt}/${mx}자 ${cnt>mx?'⚠️초과':''}</div>`;
-  }
+// 검토 결과 셀
+function renderR(row,tab){
+  const mx=MAX[tab];
+  if(row.status==='loading')return'<div class="ldg">⏳ 검토 중...</div>';
+  if(row.rResult&&row.rResult.error)return'<div class="err-cell">❌ '+esc(row.rResult.error)+'</div>';
+  if(!row.rResult)return'<span style="color:#bbb;font-size:11px">검토 버튼을 누르세요</span>';
+  const j=row.rResult,vs=j.위반사항||[];
+  const high=vs.filter(v=>v.심각도==='높음').length,mid=vs.filter(v=>v.심각도==='중간').length;
+  let scoreClass=high>0?'bad':mid>0?'warn':'good';
+  let scoreText=vs.length===0?'✅ 위반 없음':'⚠️ 위반 '+vs.length+'건 (높음 '+high+' / 중간 '+mid+')';
+  let h='<div class="rv-score '+scoreClass+'">'+scoreText+'</div>';
+  vs.forEach(v=>{
+    const c=v.심각도==='높음'?'h':v.심각도==='중간'?'m':'l';
+    const ic=v.심각도==='높음'?'🔴':v.심각도==='중간'?'🟠':'⚪';
+    h+='<div class="rv-card '+c+'"><div class="rv-cat '+c+'">'+ic+' '+esc(v.유형)+'</div><span class="rv-q">'+esc(v.원문위치||'')+'</span><div style="margin-top:3px;color:var(--su)">→ '+esc(v.수정제안||'')+'</div></div>';
+  });
+  if(j.수정안)h+='<div class="rv-fix"><div class="rv-fix-label">✅ 수정안 ('+(j.글자수||j.수정안.length)+'/'+mx+'자)</div>'+esc(j.수정안)+'</div>';
+  if(j.종합의견)h+='<div style="font-size:10px;color:var(--su);margin-top:5px">💬 '+esc(j.종합의견)+'</div>';
+  return h;
 }
 
 function render(){
-  const tab=TABS[tabIdx];const rows=data[tab];const isR=mode==='review';
-  const rBtnClass=isR?'rb rev':'rb gen';
-  const rBtnText=isR?'검토':'생성';
-  const rThClass=isR?'rh':'';
-  const rThText=isR?`🔍 검토 결과 (최대 ${MAX[tab]}자)`:`✅ 생성 결과 (최대 ${MAX[tab]}자)`;
-  const rTdClass=isR?'rres':'wres';
+  const tab=TABS[tabIdx],rows=data[tab],isR=mode==='review';
+  const rbC=isR?'rb rev':'rb gen',rbT=isR?'검토':'생성';
   let h='';
 
-  if(tab==='자율활동'||tab==='진로활동'){
-    const fc=tab==='자율활동'?'학생특성':'희망분야';
-    h=`<table><thead>
-      <tr><th rowspan="2">번호</th><th rowspan="2">${fc}</th>
-      <th colspan="2" class="sh">활동 1</th><th colspan="2" class="sh">활동 2</th><th colspan="2" class="sh">활동 3</th>
-      <th rowspan="2" class="${rThClass}" style="${isR?'background:#7B1FA2':'background:#1a6b3c'};min-width:220px">${rThText}</th><th rowspan="2">조작</th></tr>
-      <tr><th class="sh">활동 내용</th><th class="sh">결과물</th><th class="sh">활동 내용</th><th class="sh">결과물</th><th class="sh">활동 내용</th><th class="sh">결과물</th></tr>
-      </thead><tbody>`;
+  if(isR){
+    // ===== 검토 모드: 완전히 다른 틀 (문장 입력 + 점검 결과) =====
+    h='<table><thead><tr><th>번호</th><th style="min-width:300px">검토할 '+AREA_LABEL[tab]+' 문장</th><th class="rh" style="min-width:300px">🔍 길라잡이 점검 결과</th><th>조작</th></tr></thead><tbody>';
     rows.forEach((row,i)=>{
-      const inp=isR?`<textarea style="min-height:80px;color:${isR?'#4A148C':'var(--tx)'}" oninput="upd('${tab}',${i},'${fc}',this.value)" placeholder="${isR?'검토할 '+fc+'...':fc+'...'}">${esc(row[fc])}</textarea>`
-        :`<textarea oninput="upd('${tab}',${i},'${fc}',this.value)" placeholder="${fc}...">${esc(row[fc])}</textarea>`;
-      h+=`<tr><td class="num">${row.no}</td>
-      <td style="min-width:110px">${inp}</td>
-      ${[1,2,3].map(n=>`<td style="min-width:130px"><textarea oninput="upd('${tab}',${i},'활동${n}',this.value)" placeholder="활동 내용...">${esc(row[`활동${n}`])}</textarea></td>
-      <td style="min-width:110px"><textarea oninput="upd('${tab}',${i},'결과물${n}',this.value)" placeholder="결과물...">${esc(row[`결과물${n}`])}</textarea></td>`).join('')}
-      <td class="${rTdClass}" id="rc${i}">${renderRC(row,tab)}</td>
-      <td class="act"><button class="${rBtnClass}" onclick="genRow(${i})" id="gb${i}">${rBtnText}</button><button class="rb add" onclick="addR(${i})">+추가</button><button class="rb del" onclick="delR(${i})">−삭제</button></td></tr>`;
+      h+='<tr><td class="num">'+row.no+'</td>'
+        +'<td style="min-width:300px"><textarea style="min-height:110px" oninput="upd(\''+tab+'\','+i+',\'rText\',this.value)" placeholder="이미 작성된 '+AREA_LABEL[tab]+' 문장을 붙여넣으세요...">'+esc(row.rText)+'</textarea><div class="cnt ok">'+(row.rText?row.rText.length:0)+'/'+MAX[tab]+'자</div></td>'
+        +'<td class="rcell" id="rc'+i+'">'+renderR(row,tab)+'</td>'
+        +'<td class="act"><button class="'+rbC+'" onclick="genRow('+i+')" id="gb'+i+'">'+rbT+'</button><button class="rb add" onclick="addR('+i+')">+추가</button><button class="rb del" onclick="delR('+i+')">−삭제</button></td></tr>';
     });
-    h+=`</tbody></table>`;
-
-  } else if(tab==='동아리활동'){
-    h=`<table><thead><tr><th>번호</th><th style="min-width:380px">${isR?'검토할 동아리활동 문장':'참여 활동 내용'}</th>
-    <th class="${rThClass}" style="${isR?'background:#7B1FA2':'background:#1a6b3c'};min-width:240px">${rThText}</th><th>조작</th></tr></thead><tbody>`;
-    rows.forEach((row,i)=>{
-      h+=`<tr><td class="num">${row.no}</td>
-      <td><textarea style="min-height:90px" oninput="upd('${tab}',${i},'참여활동',this.value)" placeholder="${isR?'검토할 동아리활동 문장...':'동아리 활동 내용...'}">${esc(row.참여활동)}</textarea></td>
-      <td class="${rTdClass}" id="rc${i}">${renderRC(row,tab)}</td>
-      <td class="act"><button class="${rBtnClass}" onclick="genRow(${i})" id="gb${i}">${rBtnText}</button><button class="rb add" onclick="addR(${i})">+추가</button><button class="rb del" onclick="delR(${i})">−삭제</button></td></tr>`;
-    });
-    h+=`</tbody></table>`;
-
-  } else if(tab==='세특'){
-    h=`<table><thead><tr><th>번호</th><th style="min-width:85px">과목명</th>
-    <th style="min-width:${isR?'0px':'150px'}">${isR?'':' 과제'}</th>
-    <th style="min-width:200px">${isR?'검토할 세특 문장':'학생평가'}</th>
-    <th style="min-width:70px">${isR?'':'성취수준'}</th>
-    <th class="${rThClass}" style="${isR?'background:#7B1FA2':'background:#1a6b3c'};min-width:220px">${rThText}</th><th>조작</th></tr></thead><tbody>`;
-    rows.forEach((row,i)=>{
-      h+=`<tr><td class="num">${row.no}</td>
-      <td><input type="text" value="${esc(row.과목명)}" oninput="upd('${tab}',${i},'과목명',this.value)" placeholder="과목명"></td>
-      <td>${isR?'<span style="font-size:10px;color:#bbb">—</span>':`<textarea oninput="upd('${tab}',${i},'과제',this.value)" placeholder="과제·실습...">${esc(row.과제)}</textarea>`}</td>
-      <td><textarea style="min-height:80px" oninput="upd('${tab}',${i},'학생평가',this.value)" placeholder="${isR?'검토할 세특 문장...':'교사 관찰 수행 내용...'}">${esc(row.학생평가)}</textarea></td>
-      <td>${isR?'<span style="font-size:10px;color:#bbb">—</span>':`<select onchange="upd('${tab}',${i},'성취수준',this.value)">${['상','중상','중','중하','하'].map(v=>`<option${row.성취수준===v?' selected':''}>${v}</option>`).join('')}</select>`}</td>
-      <td class="${rTdClass}" id="rc${i}">${renderRC(row,tab)}</td>
-      <td class="act"><button class="${rBtnClass}" onclick="genRow(${i})" id="gb${i}">${rBtnText}</button><button class="rb add" onclick="addR(${i})">+추가</button><button class="rb del" onclick="delR(${i})">−삭제</button></td></tr>`;
-    });
-    h+=`</tbody></table>`;
-
-  } else if(tab==='행발'){
-    h=`<table><thead><tr><th>번호</th>
-    <th style="min-width:380px">${isR?'검토할 행발 문장':'담임교사 종합 의견'}</th>
-    <th class="${rThClass}" style="${isR?'background:#7B1FA2':'background:#1a6b3c'};min-width:220px">${rThText}</th><th>조작</th></tr></thead><tbody>`;
-    rows.forEach((row,i)=>{
-      h+=`<tr><td class="num">${row.no}</td>
-      <td><textarea style="min-height:80px" oninput="upd('${tab}',${i},'담임교사종합의견',this.value)" placeholder="${isR?'검토할 행발 문장...':'담임교사가 관찰한 학생 특성...'}">${esc(row.담임교사종합의견)}</textarea></td>
-      <td class="${rTdClass}" id="rc${i}">${renderRC(row,tab)}</td>
-      <td class="act"><button class="${rBtnClass}" onclick="genRow(${i})" id="gb${i}">${rBtnText}</button><button class="rb add" onclick="addR(${i})">+추가</button><button class="rb del" onclick="delR(${i})">−삭제</button></td></tr>`;
-    });
-    h+=`</tbody></table>`;
+    h+='</tbody></table>';
+    document.getElementById('tbl').innerHTML=h;return;
   }
 
+  // ===== 작성 모드 =====
+  if(tab==='자율활동'||tab==='진로활동'){
+    const fc=tab==='자율활동'?'학생특성':'희망분야';
+    h='<table><thead><tr><th rowspan="2">번호</th><th rowspan="2">'+fc+'</th><th colspan="2" class="sh">활동 1</th><th colspan="2" class="sh">활동 2</th><th colspan="2" class="sh">활동 3</th><th rowspan="2" style="background:#1a6b3c;min-width:220px">✅ 생성 결과 (최대 '+MAX[tab]+'자)</th><th rowspan="2">조작</th></tr><tr><th class="sh">활동</th><th class="sh">결과물</th><th class="sh">활동</th><th class="sh">결과물</th><th class="sh">활동</th><th class="sh">결과물</th></tr></thead><tbody>';
+    rows.forEach((row,i)=>{
+      h+='<tr><td class="num">'+row.no+'</td><td style="min-width:110px"><textarea oninput="upd(\''+tab+'\','+i+',\''+fc+'\',this.value)" placeholder="'+fc+'...">'+esc(row[fc])+'</textarea></td>';
+      [1,2,3].forEach(n=>{h+='<td style="min-width:130px"><textarea oninput="upd(\''+tab+'\','+i+',\'활동'+n+'\',this.value)" placeholder="활동...">'+esc(row['활동'+n])+'</textarea></td><td style="min-width:110px"><textarea oninput="upd(\''+tab+'\','+i+',\'결과물'+n+'\',this.value)" placeholder="결과물...">'+esc(row['결과물'+n])+'</textarea></td>'});
+      h+='<td class="wres" id="rc'+i+'">'+renderW(row,tab)+'</td><td class="act"><button class="'+rbC+'" onclick="genRow('+i+')" id="gb'+i+'">'+rbT+'</button><button class="rb add" onclick="addR('+i+')">+추가</button><button class="rb del" onclick="delR('+i+')">−삭제</button></td></tr>';
+    });
+    h+='</tbody></table>';
+  } else if(tab==='동아리활동'){
+    h='<table><thead><tr><th>번호</th><th style="min-width:380px">참여 활동 내용</th><th style="background:#1a6b3c;min-width:240px">✅ 생성 결과 (최대 500자)</th><th>조작</th></tr></thead><tbody>';
+    rows.forEach((row,i)=>{h+='<tr><td class="num">'+row.no+'</td><td><textarea style="min-height:90px" oninput="upd(\''+tab+'\','+i+',\'참여활동\',this.value)" placeholder="동아리 활동 내용...">'+esc(row.참여활동)+'</textarea></td><td class="wres" id="rc'+i+'">'+renderW(row,tab)+'</td><td class="act"><button class="'+rbC+'" onclick="genRow('+i+')" id="gb'+i+'">'+rbT+'</button><button class="rb add" onclick="addR('+i+')">+추가</button><button class="rb del" onclick="delR('+i+')">−삭제</button></td></tr>'});
+    h+='</tbody></table>';
+  } else if(tab==='세특'){
+    h='<table><thead><tr><th>번호</th><th style="min-width:85px">과목명</th><th style="min-width:150px">과제</th><th style="min-width:200px">학생평가</th><th style="min-width:70px">성취수준</th><th style="background:#1a6b3c;min-width:220px">✅ 생성 결과 (최대 350자)</th><th>조작</th></tr></thead><tbody>';
+    rows.forEach((row,i)=>{h+='<tr><td class="num">'+row.no+'</td><td><input type="text" value="'+esc(row.과목명)+'" oninput="upd(\''+tab+'\','+i+',\'과목명\',this.value)" placeholder="과목"></td><td><textarea oninput="upd(\''+tab+'\','+i+',\'과제\',this.value)" placeholder="과제...">'+esc(row.과제)+'</textarea></td><td><textarea style="min-height:80px" oninput="upd(\''+tab+'\','+i+',\'학생평가\',this.value)" placeholder="수행 내용...">'+esc(row.학생평가)+'</textarea></td><td><select onchange="upd(\''+tab+'\','+i+',\'성취수준\',this.value)">'+['상','중상','중','중하','하'].map(v=>'<option'+(row.성취수준===v?' selected':'')+'>'+v+'</option>').join('')+'</select></td><td class="wres" id="rc'+i+'">'+renderW(row,tab)+'</td><td class="act"><button class="'+rbC+'" onclick="genRow('+i+')" id="gb'+i+'">'+rbT+'</button><button class="rb add" onclick="addR('+i+')">+추가</button><button class="rb del" onclick="delR('+i+')">−삭제</button></td></tr>'});
+    h+='</tbody></table>';
+  } else if(tab==='행발'){
+    h='<table><thead><tr><th>번호</th><th style="min-width:380px">담임교사 종합 의견</th><th style="background:#1a6b3c;min-width:220px">✅ 생성 결과 (최대 300자)</th><th>조작</th></tr></thead><tbody>';
+    rows.forEach((row,i)=>{h+='<tr><td class="num">'+row.no+'</td><td><textarea style="min-height:80px" oninput="upd(\''+tab+'\','+i+',\'담임교사종합의견\',this.value)" placeholder="관찰한 학생 특성...">'+esc(row.담임교사종합의견)+'</textarea></td><td class="wres" id="rc'+i+'">'+renderW(row,tab)+'</td><td class="act"><button class="'+rbC+'" onclick="genRow('+i+')" id="gb'+i+'">'+rbT+'</button><button class="rb add" onclick="addR('+i+')">+추가</button><button class="rb del" onclick="delR('+i+')">−삭제</button></td></tr>'});
+    h+='</tbody></table>';
+  }
   document.getElementById('tbl').innerHTML=h;
 }
 
 // ===== 엑셀 불러오기 =====
 function openM(id){
-  if(id==='apiM'){document.getElementById('ki').value=apiKey;const s=document.getElementById('ks');s.textContent=apiKey?'✅ API 키 저장됨':'⚠️ API 키 없음';s.style.color=apiKey?'var(--g2)':'var(--or)';}
+  if(id==='apiM'){document.getElementById('provSel').value=provider;onProvChange()}
   document.getElementById(id).classList.add('open');
 }
-function closeM(id){document.getElementById(id).classList.remove('open');}
+function closeM(id){document.getElementById(id).classList.remove('open')}
+function onProvChange(){
+  const p=document.getElementById('provSel').value;
+  document.getElementById('keyLabel').textContent=PROV_NAME[p]+' API 키';
+  document.getElementById('ki').value=keys[p]||'';
+  document.getElementById('keyGuide').textContent=KEY_GUIDE[p];
+  const s=document.getElementById('ks');s.textContent=keys[p]?'✅ '+PROV_NAME[p]+' 키 저장됨':'⚠️ 키 없음';s.style.color=keys[p]?'var(--g2)':'var(--or)';
+}
 
 async function importXL(){
-  const file=document.getElementById('impF').files[0];
-  if(!file){showT('파일을 선택해 주세요.');return;}
-  const ab=await file.arrayBuffer();
-  const wb=XLSX.read(ab,{type:'array'});
+  const file=document.getElementById('impF').files[0];if(!file){showT('파일을 선택하세요.');return}
+  const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
   const SM={'자율활동':'자율활동','진로활동':'진로활동','동아리활동':'동아리활동','세특':'세특','행동발달 및 특기사항':'행발','행발':'행발'};
   let cnt=0;
   wb.SheetNames.forEach(name=>{
     const tab=SM[name];if(!tab)return;
-    const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''});
-    if(!rows.length)return;
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''});if(!rows.length)return;
     data[tab]=[];
     rows.forEach((row,i)=>{
       const nr=mkRow(tab,i+1);
-      const g=(...ks)=>{for(const k of ks){if(row[k]&&String(row[k]).trim())return String(row[k]).trim();}return'';};
-      if(tab==='자율활동'){
-        nr.학생특성=g('학생 특성','학생특성');
-        [1,2,3].forEach(n=>{nr[`활동${n}`]=g(`활동${n}`,`활동 ${n}`);nr[`결과물${n}`]=g(`결과물${n}`,`결과물 ${n}`);});
-      } else if(tab==='진로활동'){
-        nr.희망분야=g('희망분야','희망 분야');
-        [1,2,3].forEach(n=>{nr[`활동${n}`]=g(`활동${n}`,`활동 ${n}`);nr[`결과물${n}`]=g(`결과물${n}`,`결과물 ${n}`);});
-      } else if(tab==='동아리활동'){
-        nr.참여활동=g('참여활동','활동내용')||Object.values(row).filter(v=>v&&typeof v==='string'&&v.length>5).join('\n');
-      } else if(tab==='세특'){
-        nr.과목명=g('과목명');nr.과제=g('과제');nr.학생평가=g('학생평가','학생 평가');nr.성취수준=g('성취수준')||'중';
-      } else if(tab==='행발'){
-        nr.담임교사종합의견=g('담임교사 종합 의견','담임교사종합의견')||Object.values(row).filter(v=>v&&typeof v==='string'&&v.length>5).slice(-1)[0]||'';
+      const g=(...ks)=>{for(const k of ks){if(row[k]&&String(row[k]).trim())return String(row[k]).trim()}return''};
+      if(mode==='review'){
+        // 검토 모드: '생성결과' 또는 '문장' 컬럼을 rText로
+        nr.rText=g('생성결과','문장','작성된 문장','특기사항','검토할 문장')||g(...Object.keys(row));
       }
+      if(tab==='자율활동'){nr.학생특성=g('학생특성','학생 특성');[1,2,3].forEach(n=>{nr['활동'+n]=g('활동'+n,'활동 '+n);nr['결과물'+n]=g('결과물'+n,'결과물 '+n)})}
+      else if(tab==='진로활동'){nr.희망분야=g('희망분야','희망 분야');[1,2,3].forEach(n=>{nr['활동'+n]=g('활동'+n,'활동 '+n);nr['결과물'+n]=g('결과물'+n,'결과물 '+n)})}
+      else if(tab==='동아리활동'){nr.참여활동=g('참여활동','활동내용')}
+      else if(tab==='세특'){nr.과목명=g('과목명');nr.과제=g('과제');nr.학생평가=g('학생평가','학생 평가');nr.성취수준=g('성취수준')||'중'}
+      else if(tab==='행발'){nr.담임교사종합의견=g('담임교사 종합 의견','담임교사종합의견')}
       data[tab].push(nr);cnt++;
     });
   });
-  closeM('impM');render();showT(`✅ ${cnt}개 행 불러오기 완료`);
+  closeM('impM');render();showT('✅ '+cnt+'개 행 불러오기 완료');
 }
 
-// ===== 엑셀 내보내기 =====
+// ===== 결과 내보내기 =====
 function exportXL(){
-  const wb=XLSX.utils.book_new();
-  const isR=mode==='review';
+  const wb=XLSX.utils.book_new();const isR=mode==='review';
   TABS.forEach(tab=>{
     const rows=data[tab];if(!rows.length)return;
-    const out=rows.map(row=>{
-      const base={번호:row.no};
-      let res={};
-      if(isR&&row.rResult&&!row.rResult.error){
-        const j=row.rResult;
-        const vs=j.위반사항||[];
-        res={위반건수:vs.length,위반상세:vs.map(v=>`[${v.유형}]${v.원문위치}→${v.수정제안}`).join(' / '),수정안:j.수정안||'',종합의견:j.종합의견||''};
-      } else if(!isR){res={생성결과:row.wResult||''};}
-      if(tab==='자율활동') return{...base,학생특성:row.학생특성,활동1:row.활동1,결과물1:row.결과물1,활동2:row.활동2,결과물2:row.결과물2,활동3:row.활동3,결과물3:row.결과물3,...res};
-      if(tab==='진로활동') return{...base,희망분야:row.희망분야,활동1:row.활동1,결과물1:row.결과물1,활동2:row.활동2,결과물2:row.결과물2,활동3:row.활동3,결과물3:row.결과물3,...res};
-      if(tab==='동아리활동') return{...base,참여활동:row.참여활동,...res};
-      if(tab==='세특') return{...base,과목명:row.과목명,과제:row.과제,학생평가:row.학생평가,성취수준:row.성취수준,...res};
-      if(tab==='행발') return{...base,담임교사종합의견:row.담임교사종합의견,...res};
+    const out=rows.map(r=>{
+      const base={번호:r.no};let res={};
+      if(isR&&r.rResult&&!r.rResult.error){
+        const j=r.rResult,vs=j.위반사항||[];
+        res={검토문장:r.rText,위반건수:vs.length,위반상세:vs.map(v=>'['+v.유형+']'+v.원문위치+'→'+v.수정제안).join(' / '),수정안:j.수정안||'',종합의견:j.종합의견||''};
+        return{...base,...res};
+      }
+      if(!isR)res={생성결과:r.wResult||''};
+      if(tab==='자율활동')return{...base,학생특성:r.학생특성,활동1:r.활동1,결과물1:r.결과물1,활동2:r.활동2,결과물2:r.결과물2,활동3:r.활동3,결과물3:r.결과물3,...res};
+      if(tab==='진로활동')return{...base,희망분야:r.희망분야,활동1:r.활동1,결과물1:r.결과물1,활동2:r.활동2,결과물2:r.결과물2,활동3:r.활동3,결과물3:r.결과물3,...res};
+      if(tab==='동아리활동')return{...base,참여활동:r.참여활동,...res};
+      if(tab==='세특')return{...base,과목명:r.과목명,과제:r.과제,학생평가:r.학생평가,성취수준:r.성취수준,...res};
+      if(tab==='행발')return{...base,담임교사종합의견:r.담임교사종합의견,...res};
     });
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(out),tab==='행발'?'행동발달및특기사항':tab);
   });
-  XLSX.writeFile(wb,`생기부_${isR?'검토':'작성'}_결과_${new Date().toLocaleDateString('ko')}.xlsx`);
-  showT('✅ 결과 엑셀 저장됨');
+  XLSX.writeFile(wb,'생기부_'+(isR?'검토':'작성')+'_결과_'+new Date().toLocaleDateString('ko')+'.xlsx');
+  showT('✅ 결과 저장됨');
 }
 
-// ===== 양식 다운로드 =====
 function dlTpl(){
-  const wb=XLSX.utils.book_new();
-  const a=(n,h,ex)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([h,...ex]),n);
-  a('자율활동',['번호','학생특성','활동1','결과물1','활동2','결과물2','활동3','결과물3'],[[1,'','','','','','','']]);
-  a('진로활동',['번호','희망분야','활동1','결과물1','활동2','결과물2','활동3','결과물3'],[[1,'','','','','','','']]);
-  a('동아리활동',['번호','참여활동'],[[1,'']]);
-  a('세특',['번호','과목명','과제','학생평가','성취수준'],[[1,'','','','중']]);
-  a('행동발달 및 특기사항',['번호','담임교사 종합 의견'],[[1,'']]);
-  XLSX.writeFile(wb,'생기부_입력양식_2026.xlsx');showT('✅ 양식 다운로드 완료');
+  const wb=XLSX.utils.book_new();const a=(n,h,ex)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([h,...ex]),n);
+  if(mode==='review'){
+    ['자율활동','진로활동','동아리활동','세특','행동발달 및 특기사항'].forEach(n=>a(n,['번호','생성결과'],[[1,'']]));
+    XLSX.writeFile(wb,'생기부_검토용양식.xlsx');
+  } else {
+    a('자율활동',['번호','학생특성','활동1','결과물1','활동2','결과물2','활동3','결과물3'],[[1,'','','','','','','']]);
+    a('진로활동',['번호','희망분야','활동1','결과물1','활동2','결과물2','활동3','결과물3'],[[1,'','','','','','','']]);
+    a('동아리활동',['번호','참여활동'],[[1,'']]);
+    a('세특',['번호','과목명','과제','학생평가','성취수준'],[[1,'','','','중']]);
+    a('행동발달 및 특기사항',['번호','담임교사 종합 의견'],[[1,'']]);
+    XLSX.writeFile(wb,'생기부_작성용양식.xlsx');
+  }
+  showT('✅ 양식 다운로드 완료');
 }
 
 // ===== API 키 =====
-function saveKey(){apiKey=document.getElementById('ki').value.trim();if(apiKey){localStorage.setItem('ck',apiKey);document.getElementById('apiBtn').textContent='🔑 키 등록됨';document.getElementById('apiBtn').classList.add('on');showT('✅ API 키 저장됨');}else clearKey();closeM('apiM');}
-function clearKey(){apiKey='';localStorage.removeItem('ck');document.getElementById('apiBtn').textContent='🔑 API 키';document.getElementById('apiBtn').classList.remove('on');closeM('apiM');}
+function saveKey(){
+  const p=document.getElementById('provSel').value;
+  keys[p]=document.getElementById('ki').value.trim();
+  provider=p;localStorage.setItem('prov',p);
+  if(keys[p])localStorage.setItem('k_'+p,keys[p]);else localStorage.removeItem('k_'+p);
+  updBadge();showT('✅ '+PROV_NAME[p]+(keys[p]?' 키 저장됨':' 키 삭제됨'));closeM('apiM');
+}
+function clearKey(){
+  const p=document.getElementById('provSel').value;
+  keys[p]='';localStorage.removeItem('k_'+p);document.getElementById('ki').value='';onProvChange();updBadge();
+}
+function updBadge(){
+  document.getElementById('provBadge').textContent=PROV_NAME[provider]+(keys[provider]?' ✓':'');
+  document.getElementById('apiBtn').classList.toggle('on',!!keys[provider]);
+}
 
-// ===== 유틸 =====
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
-['apiM','impM'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)closeM(id);}));
-if(apiKey){document.getElementById('apiBtn').textContent='🔑 키 등록됨';document.getElementById('apiBtn').classList.add('on');}
-render();
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function showT(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+['apiM','impM'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)closeM(id)}));
+updBadge();render();
 </script>
 </body>
 </html>
