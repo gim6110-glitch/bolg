@@ -1,3 +1,4 @@
 [build]
-  publish = "public"
+  command = "cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
   functions = "netlify/functions"
