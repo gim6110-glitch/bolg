@@ -111,9 +111,10 @@ $('modal-bg').addEventListener('click',e=>{if(e.target===$('modal-bg'))closeModa
 function isOwner(r){return !!state.user && state.user.id===r.author_id;}
 function canEdit(r){return state.admin||(!state.guest&&isOwner(r))||!!r.guest_protected;}
 function safeHttp(url){try{let u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
+let guestSignInPromise=null;
 async function syncAuth(){
  const {data:{session}}=await sb.auth.getSession();state.user=session?.user||null;
- if(!state.user){try{let r=await sb.auth.signInAnonymously();if(r.error)throw r.error;state.user=r.data.user;}catch(e){toast('게스트 로그인 설정이 필요합니다. Supabase에서 Anonymous Sign-ins를 활성화하세요.',true);}}
+ if(!state.user){try{if(!guestSignInPromise)guestSignInPromise=sb.auth.signInAnonymously();let r=await guestSignInPromise;if(r.error)throw r.error;state.user=r.data.user;}catch(e){toast('게스트 로그인 설정이 필요합니다. Supabase에서 Anonymous Sign-ins를 활성화하세요.',true);}finally{guestSignInPromise=null;}}
  state.guest=!state.user||!!state.user.is_anonymous;
  state.admin=false;
  if(state.user&&!state.guest){try{let r=await sb.rpc('hub_am_i_admin');state.admin=r.data===true;}catch(e){console.warn(e);}}
@@ -217,6 +218,7 @@ async function previewFile(r){
    const pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs');
    pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs';
    state.pdf=await pdfjs.getDocument({data:await blob.arrayBuffer()}).promise;
+   if(state.current?.id!==r.id)return;
    const saved=localStorage.getItem('hub-pdf-'+r.id+'-'+state.user?.id);
    state.pdfPage=Math.min(state.pdf.numPages,Math.max(1,Number(saved)||1));
    host.innerHTML='<div class="reader-tools"><button class="btn sm" id="pdf-prev">←</button><input id="pdf-page" type="number" min="1" max="'+state.pdf.numPages+'" value="'+state.pdfPage+'" aria-label="PDF 페이지"><span>/ '+state.pdf.numPages+'쪽</span><button class="btn sm" id="pdf-next">→</button><select id="pdf-zoom" style="width:99px"><option value=".9">75%</option><option value="1.2" selected>100%</option><option value="1.5">125%</option><option value="1.8">150%</option></select><button class="btn sm" id="pdf-full">⛶ 전체화면</button></div>'+
