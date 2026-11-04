@@ -1,0 +1,2 @@
+alter table public.hub_resources add column if not exists guest_protected boolean generated always as (guest_password_hash is not null) stored;
+grant select (guest_protected) on public.hub_resources to authenticated;
