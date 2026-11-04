@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102b48">
+<title>모아배움 | 학교와 일상을 잇는 자료실</title>
+<style>
+:root{font-family:"Pretendard","Noto Sans KR",system-ui,-apple-system,sans-serif;color:#1c334b;background:#f5f7fb;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}
+header{background:#102b48;color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 3px 22px #12294a12}
+.nav{max-width:1420px;margin:auto;min-height:78px;padding:13px 25px;display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:11px;font-size:22px;font-weight:850;white-space:nowrap;letter-spacing:-.8px}.mark{display:grid;place-items:center;border-radius:14px;width:42px;height:42px;background:#47d0ba;color:#102b48;font-size:24px}
+.toplinks{display:flex;gap:6px;margin-left:32px}.toplinks button{border:0;background:none;color:#bcd0e4;padding:11px 17px;border-radius:12px;font-weight:700}
+.toplinks button.active{background:#254768;color:#fff}.account{margin-left:auto;display:flex;gap:10px;align-items:center;min-width:0}
+.pill{font-size:12px;font-weight:800;border:1px solid #64849d;color:#cfe0ea;padding:5px 10px;border-radius:30px;white-space:nowrap}
+.btn{border:1px solid #d7e1ed;background:#fff;color:#25415e;padding:10px 15px;border-radius:11px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:#146fa4;border-color:#146fa4;color:#fff}.btn.dark{background:#183f5e;border-color:#183f5e;color:#fff}.btn.light{background:#e5f8f3;color:#007d69;border-color:#c4efe4}.btn.danger{color:#b52141;border-color:#f4c6d0}
+.btn:disabled{opacity:.45;cursor:not-allowed}.btn.sm{padding:7px 11px;font-size:13px}
+main{max-width:1420px;margin:auto;padding:0 25px 60px}
+.hero{background:linear-gradient(115deg,#102b48 0%,#205976 62%,#197d85 100%);color:#fff;border-radius:0 0 25px 25px;padding:38px 43px 34px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:300px;height:300px;border:50px solid #ffffff0a;border-radius:50%;right:-80px;top:-175px}
+.eyebrow{display:inline-block;font-size:12px;font-weight:850;letter-spacing:1.4px;color:#70e3ce;margin-bottom:8px}.hero h1{font-size:clamp(25px,3.5vw,40px);line-height:1.35;letter-spacing:-1.7px;margin:0 0 10px}
+.hero p{color:#ccdfeb;margin:0;line-height:1.7;font-size:15px}.hero-actions{margin-top:25px;display:flex;gap:9px;flex-wrap:wrap}
+.hero-actions .btn{background:#fff;color:#102b48;border:0}.hero-actions .outline{background:#ffffff17;color:#fff;border:1px solid #ffffff55}
+.stats{display:flex;gap:24px;margin:21px 0 0;flex-wrap:wrap}.stats span{font-size:13px;color:#cfe7ed}.stats strong{color:#fff;font-size:17px;margin-right:5px}
+.toolbar{display:flex;align-items:center;gap:10px;margin:24px 0 19px;flex-wrap:wrap}
+.search{display:flex;align-items:center;background:#fff;border:1px solid #dbe4ed;border-radius:13px;padding:0 13px;min-width:240px;flex:1;box-shadow:0 2px 10px #142e4d08}.search input{border:0;outline:none;padding:14px 8px;width:100%;background:none}
+select,input[type=text],input[type=password],input[type=url],input[type=number],textarea{border:1px solid #d6e0ea;border-radius:10px;padding:11px 12px;background:#fff;color:#1b344d;width:100%;outline-color:#3485ba}
+.toolbar select{width:auto;min-width:135px;height:46px}.toolbar .btn{height:46px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin:20px 0 14px;gap:15px}.section-heading h2{font-size:21px;letter-spacing:-.8px;margin:0}.section-heading small{color:#70879b}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.resource{background:#fff;border:1px solid #e0e8ef;border-radius:16px;padding:21px;display:flex;flex-direction:column;gap:11px;box-shadow:0 6px 25px #0e33530b;min-height:220px;transition:transform .16s,border-color .16s}
+.resource:hover{transform:translateY(-2px);border-color:#abd1e2}.card-top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.type{background:#e9f5f9;color:#23708b;padding:5px 9px;border-radius:7px;font-size:12px;font-weight:800}
+.cat{color:#8194a4;font-size:12px}.resource h3{margin:3px 0 0;font-size:18px;letter-spacing:-.6px;line-height:1.4}
+.resource p{margin:0;font-size:13px;color:#63778b;line-height:1.7;overflow-wrap:anywhere;min-height:40px}
+.tags{display:flex;gap:5px;flex-wrap:wrap}.tag{background:#f2f5f8;color:#667b8a;padding:4px 7px;font-size:11px;border-radius:5px}
+.card-bottom{margin-top:auto;padding-top:13px;border-top:1px solid #eef2f6;display:flex;justify-content:space-between;align-items:center;gap:7px}
+.meta{font-size:11px;color:#8293a3}.empty{padding:55px 22px;text-align:center;background:#fff;border:1px dashed #c5d6e2;border-radius:16px;color:#627c91;grid-column:1/-1}
+.empty strong{display:block;color:#25435a;font-size:17px;margin-bottom:7px}
+.notice{padding:12px 15px;border:1px solid #cfe5ec;background:#e9f5fa;color:#35677a;border-radius:11px;font-size:13px;line-height:1.7;margin:15px 0}
+.notice.warn{background:#fff6e8;border-color:#f4deb9;color:#836026}
+.panel{background:#fff;padding:24px;border-radius:17px;border:1px solid #dde6ef;margin-top:20px;box-shadow:0 5px 20px #12304e0a}
+.panel h2{margin:0 0 15px;font-size:21px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}
+.field label{font-size:13px;font-weight:800;color:#334e64}.field small{color:#8193a2;font-size:12px}
+textarea{min-height:105px;resize:vertical}.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.detail-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.detail-head h2{margin:12px 0 7px;font-size:27px}.muted{color:#72899b;font-size:13px}
+.reader{background:#152b40;border-radius:15px;padding:15px;color:#fff;margin-top:17px}
+.reader-tools{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.reader-tools .btn{background:#2b4c67;color:#fff;border:1px solid #496a80}.reader-tools input{width:68px;color:#18354a;text-align:center;padding:7px}
+#pdf-canvas{display:block;max-width:100%;margin:auto;border-radius:3px;background:white;box-shadow:0 4px 30px #0005}
+.pdf-scroll{max-height:75vh;overflow:auto;text-align:center;border-radius:7px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:18px;align-items:start}
+.sidebox{background:#f5f9fb;border:1px solid #deeaef;border-radius:13px;padding:17px}
+.sidebox h3{margin:0 0 10px;font-size:15px}.sidebox textarea{min-height:118px;font-size:13px}
+.feedback{position:fixed;bottom:23px;right:23px;background:#12364d;color:#fff;box-shadow:0 5px 25px #0003;border-radius:12px;padding:15px 19px;z-index:99;max-width:min(410px,90vw);line-height:1.6}
+.feedback.error{background:#9a2d40}
+.footer{text-align:center;color:#9aabb7;font-size:12px;margin-top:45px;line-height:1.7}
+.modal-bg{position:fixed;inset:0;background:#0a213ab3;display:grid;place-items:center;z-index:50;padding:18px}.modal{background:#fff;border-radius:20px;padding:25px;width:min(480px,100%);box-shadow:0 20px 80px #0005}.modal h2{margin:0 0 12px}
+[hidden]{display:none!important}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}.toplinks{margin-left:5px}}
+@media(max-width:720px){.nav{padding:11px 13px;flex-wrap:wrap;gap:6px}.brand{font-size:19px}.toplinks{order:3;width:100%;margin:5px 0 0;justify-content:space-around}.toplinks button{flex:1}.account{gap:5px}.account .pill{display:none}.account .btn{padding:8px;font-size:12px}main{padding:0 12px 35px}.hero{padding:25px 19px;border-radius:0 0 17px 17px}.hero p{font-size:13px}.stats{gap:13px}.cards{grid-template-columns:1fr}.resource{min-height:170px}.toolbar{gap:7px}.search{flex-basis:100%}.toolbar select{flex:1;min-width:80px}.panel{padding:17px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.reader{padding:8px}.reader-tools{gap:4px}.reader-tools .btn{font-size:12px;padding:7px}.section-heading h2{font-size:18px}}
+</style>
+</head>
+<body>
+<header><nav class="nav">
+<div class="brand"><div class="mark">✦</div>모아배움</div>
+<div class="toplinks"><button id="tab-school" class="active" data-space="school">🏫 학교 자료실</button><button id="tab-personal" data-space="personal">🌿 개인 아카이브</button></div>
+<div class="account"><span class="pill" id="role-label">연결 중</span><button class="btn sm" id="auth-btn">Google 로그인</button><button class="btn sm" id="logout-btn" hidden>로그아웃</button></div>
+</nav></header>
+<main>
+<section class="hero" id="hero"><span class="eyebrow">LEARNING & LIFE HUB</span>
+<h1 id="hero-title">가르침과 배움의 모든 것을<br>하나의 공간에서</h1>
+<p id="hero-text">교과 자료, 웹교과서, AI 시뮬레이터까지 자유롭게 공유하고 함께 성장하는 자료실입니다.</p>
+<div class="hero-actions"><button class="btn" id="add-btn">＋ 자료 등록하기</button><button class="btn outline" id="mine-btn">내 자료 보기</button><button class="btn outline" id="favorites-btn">☆ 즐겨찾기</button><button class="btn outline" id="admin-btn" hidden>⚙ 관리자</button></div>
+<div class="stats"><span><strong id="s-all">0</strong>전체 자료</span><span><strong id="s-doc">0</strong>문서·교과서</span><span><strong id="s-sim">0</strong>시뮬레이터</span></div>
+</section>
+<div id="app">
+<div id="browse-view">
+<div class="toolbar"><div class="search">⌕ <input id="search-input" placeholder="자료명, 과목, 태그 또는 설명 검색"></div><select id="kind-filter" aria-label="자료 형식"><option value="">모든 유형</option><option value="document">PDF·파일</option><option value="simulator">시뮬레이터</option><option value="link">웹 링크</option><option value="video">영상</option><option value="note">학습 자료</option></select><select id="category-filter" aria-label="분류"><option value="">전체 분류</option></select><select id="sort-filter" aria-label="정렬"><option value="newest">최신순</option><option value="oldest">오래된순</option><option value="title">제목순</option></select></div>
+<div class="section-heading"><h2 id="list-title">전체 자료</h2><small id="list-count">0개</small></div>
+<div class="cards" id="cards"><div class="empty">자료를 불러오고 있습니다.</div></div>
+</div>
+<div id="detail-view" hidden></div>
+<div id="editor-view" hidden></div>
+<div id="admin-view" hidden></div>
+</div>
+<div class="footer">모아배움 · 학교와 개인의 자료를 연결하는 지식 플랫폼<br>저작권을 존중하고 학생 개인정보가 포함된 파일은 게시하지 마세요.</div>
+</main>
+<div class="modal-bg" id="modal-bg" hidden><div class="modal" id="modal-content"></div></div>
+<div id="toast-zone" aria-live="polite"></div>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm';
+const SUPABASE_URL='https://izmumegfqvsorzkkixfi.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_VtcZMVNqZ4nFsqwfHP9Lxg_PvXZD3Fd';
+const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const BUCKET='hub-private-files';
+const RESOURCE_COLUMNS='id,space,kind,category,title,summary,body,subject,grade,tags,external_url,file_path,file_name,file_mime,file_size,visibility,status,author_id,author_name,created_at,updated_at';
+const TYPES={document:'📖 문서·교과서',simulator:'🧪 시뮬레이터',link:'🔗 웹 링크',video:'▶ 영상',note:'📝 학습 자료'};
+const CATEGORIES={school:['기계설계·CAD','3D프린팅','제조 AI·SW','반도체·공정','정보·데이터','AI융합교육','연수·수업자료','기타'],personal:['일상·기록','자료·문서','유틸리티','프로젝트','생활정보','여행','기타']};
+const state={space:'school',user:null,admin:false,guest:true,items:[],filter:'',mode:'all',view:'browse',current:null,editor:null,pdf:null,pdfPage:1,pdfScale:1.2,pdfBlobUrl:null,notes:[],requests:[],favoriteIds:new Set(),saving:false};
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(d));
+const errText=e=>e?.message||String(e);
+function toast(s,error=false){$('toast-zone').innerHTML='<div class="feedback'+(error?' error':'')+'">'+esc(s)+'</div>';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('toast-zone').innerHTML='',4500);}
+function show(id){for(const v of ['browse','detail','editor','admin']) $(v+'-view').hidden=v!==id;state.view=id;scrollTo({top:0,behavior:'smooth'});}
+function modal(html){$('modal-content').innerHTML=html;$('modal-bg').hidden=false;}
+function closeModal(){$('modal-bg').hidden=true;$('modal-content').innerHTML='';}
+$('modal-bg').addEventListener('click',e=>{if(e.target===$('modal-bg'))closeModal();});
+function isOwner(r){return !!state.user && state.user.id===r.author_id;}
+function canEdit(r){return state.admin||(!state.guest&&isOwner(r))||!!r.guest_password_hash;}
+function safeHttp(url){try{let u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
+async function syncAuth(){
+ const {data:{session}}=await sb.auth.getSession();state.user=session?.user||null;
+ if(!state.user){try{let r=await sb.auth.signInAnonymously();if(r.error)throw r.error;state.user=r.data.user;}catch(e){toast('게스트 로그인 설정이 필요합니다. Supabase에서 Anonymous Sign-ins를 활성화하세요.',true);}}
+ state.guest=!state.user||!!state.user.is_anonymous;
+ state.admin=false;
+ if(state.user&&!state.guest){try{let r=await sb.rpc('hub_am_i_admin');state.admin=r.data===true;}catch(e){console.warn(e);}}
+ $('role-label').textContent=state.admin?'관리자':state.guest?'게스트':(state.user?.email||'일반 사용자');
+ $('auth-btn').hidden=!state.guest;$('logout-btn').hidden=state.guest;$('admin-btn').hidden=!state.admin;
+ $('auth-btn').textContent='Google 로그인';
+}
+async function googleLogin(){try{const r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(r.error)throw r.error;}catch(e){toast('로그인 실패: '+errText(e),true);}}
+$('auth-btn').onclick=googleLogin;
+$('logout-btn').onclick=async()=>{await sb.auth.signOut();await syncAuth();await load();toast('게스트 모드로 전환했습니다.');};
+sb.auth.onAuthStateChange(()=>{setTimeout(async()=>{await syncAuth();await load();},20);});
+$('tab-school').onclick=()=>switchSpace('school');$('tab-personal').onclick=()=>switchSpace('personal');
+function switchSpace(space){state.space=space;state.mode='all';state.filter='';$('search-input').value='';$('kind-filter').value='';$('category-filter').value='';setSpaceUI();renderBrowse();}
+function setSpaceUI(){
+ for(const v of ['school','personal'])$('tab-'+v).classList.toggle('active',state.space===v);
+ $('hero-title').innerHTML=state.space==='school'?'가르침과 배움의 모든 것을<br>하나의 공간에서':'나의 일상과 프로젝트를<br>차곡차곡 모으는 공간';
+ $('hero-text').textContent=state.space==='school'?'교과 자료, PDF 웹교과서, AI 시뮬레이터, 연수 자료를 공유하는 배움터입니다.':'생활 자료, 개인 프로젝트, 유용한 도구와 생각을 한 곳에 기록하고 공유하세요.';
+ $('category-filter').innerHTML='<option value="">전체 분류</option>'+CATEGORIES[state.space].map(x=>'<option>'+esc(x)+'</option>').join('');
+}
+async function load(){
+ try{
+  let q=await sb.from('hub_resources').select(RESOURCE_COLUMNS).order('created_at',{ascending:false}).limit(1000);
+  if(q.error)throw q.error;state.items=q.data||[];
+  if(state.user){
+   let f=await sb.from('hub_favorites').select('resource_id').eq('user_id',state.user.id);
+   state.favoriteIds=new Set((f.data||[]).map(x=>x.resource_id));
+  }else state.favoriteIds.clear();
+  if(state.view==='detail'&&state.current){
+    const updated=state.items.find(x=>x.id===state.current.id);
+    if(updated){state.current=updated;await detail(updated.id);return;}
+  }
+  if(state.view==='browse')renderBrowse();
+ }catch(e){console.error(e);$('cards').innerHTML='<div class="empty"><strong>자료를 불러오지 못했습니다.</strong>'+esc(errText(e))+'<br>Supabase 인증 및 SQL 설정을 확인하세요.</div>';}
+}
+function renderBrowse(){
+ show('browse');const items=state.items.filter(r=>r.space===state.space);
+ const q=$('search-input').value.trim().toLowerCase(),k=$('kind-filter').value,c=$('category-filter').value;
+ let arr=items.filter(r=>(!k||r.kind===k)&&(!c||r.category===c)&&(!q||[r.title,r.summary,r.subject,r.grade,r.category,r.author_name,(r.tags||[]).join(' ')].join(' ').toLowerCase().includes(q)));
+ if(state.mode==='mine'){arr=arr.filter(r=>isOwner(r));$('list-title').textContent='내가 등록한 자료';}
+ else if(state.mode==='favorites'){arr=arr.filter(r=>state.favoriteIds.has(r.id));$('list-title').textContent='즐겨찾기';}
+ else $('list-title').textContent=state.space==='school'?'교과·학습 자료실':'개인 아카이브';
+ if($('sort-filter').value==='oldest')arr.sort((a,b)=>a.created_at.localeCompare(b.created_at));
+ if($('sort-filter').value==='title')arr.sort((a,b)=>a.title.localeCompare(b.title,'ko'));
+ $('s-all').textContent=items.length;$('s-doc').textContent=items.filter(r=>r.kind==='document').length;$('s-sim').textContent=items.filter(r=>r.kind==='simulator').length;
+ $('list-count').textContent=arr.length+'개';
+ $('cards').innerHTML=arr.length?arr.map(r=>'<article class="resource"><div class="card-top"><span class="type">'+(TYPES[r.kind]||'📁 기타')+'</span><span class="cat">'+esc(r.category)+'</span></div>'+
+ '<h3>'+esc(r.title)+'</h3><p>'+esc(r.summary||r.body.slice(0,110)||'설명을 등록하지 않았습니다.')+'</p><div class="tags">'+(r.tags||[]).slice(0,4).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+(r.visibility==='private'?'<span class="tag">🔒 비공개</span>':'')+'</div>'+
+ '<div class="card-bottom"><span class="meta">'+esc(r.author_name)+' · '+fmt(r.created_at)+'</span><div style="display:flex;gap:5px"><button class="btn sm" data-fav="'+r.id+'" aria-label="즐겨찾기">'+(state.favoriteIds.has(r.id)?'★':'☆')+'</button><button class="btn primary sm" data-open="'+r.id+'">열기 →</button></div></div></article>').join(''):
+ '<div class="empty"><div style="font-size:35px">📚</div><strong>아직 등록된 자료가 없습니다.</strong>새로운 자료를 첫 번째로 공유해 보세요.<br><button class="btn primary" style="margin-top:15px" id="empty-add">자료 등록하기</button></div>';
+ $('cards').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>detail(el.dataset.open));
+ $('cards').querySelectorAll('[data-fav]').forEach(el=>el.onclick=()=>favorite(el.dataset.fav));
+ if($('empty-add'))$('empty-add').onclick=()=>editor();
+}
+['search-input','kind-filter','category-filter','sort-filter'].forEach(id=>$(id).addEventListener(id==='search-input'?'input':'change',()=>{if(state.view==='browse')renderBrowse();}));
+$('add-btn').onclick=()=>editor();$('mine-btn').onclick=()=>{state.mode='mine';renderBrowse();};$('favorites-btn').onclick=()=>{state.mode='favorites';renderBrowse();};$('admin-btn').onclick=()=>adminPanel();
+async function favorite(id){
+ if(!state.user){toast('게스트 인증을 먼저 활성화하세요.',true);return;}
+ const has=state.favoriteIds.has(id);
+ let r=has?await sb.from('hub_favorites').delete().eq('user_id',state.user.id).eq('resource_id',id):await sb.from('hub_favorites').insert({user_id:state.user.id,resource_id:id});
+ if(r.error){toast(errText(r.error),true);return;}
+ has?state.favoriteIds.delete(id):state.favoriteIds.add(id);if(state.view==='browse')renderBrowse();else if(state.current)detail(state.current.id);
+}
+async function detail(id){
+ const r=state.items.find(x=>x.id===id);if(!r){toast('자료를 찾을 수 없습니다.',true);return;}
+ if(state.current?.id!==id){clearPdf();state.pdfPage=1;}
+ state.current=r;show('detail');
+ const preview=r.file_path?(r.file_mime==='application/pdf'?'<div class="reader"><div id="reader-host">PDF를 준비하고 있습니다...</div></div>':'<div class="reader"><div id="reader-host">파일 미리보기 준비 중...</div></div>'):
+ (r.external_url?'<div class="reader"><p style="text-align:center">연결된 웹사이트</p><div style="background:white;border-radius:9px;padding:12px;color:#193c50;overflow-wrap:anywhere">'+esc(r.external_url)+'</div></div>':'');
+ $('detail-view').innerHTML='<div class="panel"><div class="detail-head"><button class="btn sm" id="go-back">← 목록</button><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" id="fav-detail">'+(state.favoriteIds.has(id)?'★ 즐겨찾기':'☆ 즐겨찾기')+'</button>'+
+ (canEdit(r)?'<button class="btn sm" id="edit-detail">✎ 수정</button><button class="btn danger sm" id="del-detail">삭제</button>':'')+'</div></div>'+
+ '<h2>'+esc(r.title)+'</h2><p class="muted">'+esc(r.category)+' · '+esc(r.author_name)+' · '+fmt(r.created_at)+(r.subject?' · '+esc(r.subject):'')+(r.grade?' · '+esc(r.grade):'')+'</p>'+
+ '<p style="white-space:pre-wrap;line-height:1.8">'+esc(r.summary)+'</p>'+
+ '<div class="tags">'+(r.tags||[]).map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div>'+
+ (r.body?'<div class="sidebox" style="white-space:pre-wrap;line-height:1.9;margin-top:18px">'+esc(r.body)+'</div>':'')+
+ preview+
+ '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+
+ (r.external_url?'<button class="btn primary" id="open-external">↗ 연결 사이트 열기</button>':'')+
+ (r.file_path?'<button class="btn primary" id="download-btn">⇩ 파일 다운로드</button>':'')+
+ '</div><div id="request-status" class="muted" style="margin-top:12px"></div>'+
+ '<p class="muted" style="margin-top:18px">※ 문서 열람 기능과 다운로드 승인은 별개입니다. 열람 가능한 PDF의 화면 캡처 및 복사를 완전히 방지할 수는 없습니다.</p></div>';
+ $('go-back').onclick=()=>{clearPdf();renderBrowse();};$('fav-detail').onclick=()=>favorite(id);
+ if($('edit-detail'))$('edit-detail').onclick=()=>editor(r);
+ if($('del-detail'))$('del-detail').onclick=()=>deleteResource(r);
+ if($('open-external'))$('open-external').onclick=()=>{const u=safeHttp(r.external_url);if(u)window.open(u,'_blank','noopener,noreferrer');};
+ if($('download-btn'))$('download-btn').onclick=()=>downloadRequested(r);
+ if(r.file_path)await previewFile(r);
+ if(r.file_path)await displayRequestStatus(r);
+}
+function clearPdf(){state.pdf=null;if(state.pdfBlobUrl){URL.revokeObjectURL(state.pdfBlobUrl);state.pdfBlobUrl=null;}}
+async function previewFile(r){
+ if(!r.file_path)return;
+ const host=$('reader-host');if(!host)return;
+ try{
+  host.textContent='자료를 불러오는 중...';
+  const out=await sb.storage.from(BUCKET).download(r.file_path);
+  if(out.error)throw out.error;
+  if(state.current?.id!==r.id)return;
+  const blob=out.data;
+  if(r.file_mime==='application/pdf'||r.file_name?.toLowerCase().endsWith('.pdf')){
+   const pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs');
+   pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs';
+   state.pdf=await pdfjs.getDocument({data:await blob.arrayBuffer()}).promise;
+   const saved=localStorage.getItem('hub-pdf-'+r.id+'-'+state.user?.id);
+   state.pdfPage=Math.min(state.pdf.numPages,Math.max(1,Number(saved)||1));
+   host.innerHTML='<div class="reader-tools"><button class="btn sm" id="pdf-prev">←</button><input id="pdf-page" type="number" min="1" max="'+state.pdf.numPages+'" value="'+state.pdfPage+'" aria-label="PDF 페이지"><span>/ '+state.pdf.numPages+'쪽</span><button class="btn sm" id="pdf-next">→</button><select id="pdf-zoom" style="width:99px"><option value=".9">75%</option><option value="1.2" selected>100%</option><option value="1.5">125%</option><option value="1.8">150%</option></select><button class="btn sm" id="pdf-full">⛶ 전체화면</button></div>'+
+   '<div class="split"><div><div class="pdf-scroll" id="pdf-scroll"><canvas id="pdf-canvas"></canvas></div><div class="reader-tools" style="margin-top:10px"><input id="pdf-find" type="text" style="width:min(260px,65%)" placeholder="PDF 텍스트 검색"><button class="btn sm" id="pdf-find-btn">찾기</button></div><div id="pdf-search-status" class="muted" style="color:#bbd8e5;text-align:center"></div></div>'+
+   '<div class="sidebox" style="color:#25445a"><h3>✎ 페이지별 학습 메모</h3><p class="muted" id="note-page">현재 '+state.pdfPage+'쪽</p><textarea id="pdf-note" placeholder="이 페이지의 핵심 개념, 나의 생각, 질문을 기록하세요."></textarea><label style="display:flex;gap:6px;align-items:center;margin:10px 0"><input type="checkbox" id="pdf-bookmark" style="width:auto"> 이 페이지 책갈피</label><button class="btn primary" id="save-note">메모 저장</button><div id="bookmark-list" style="margin-top:15px"></div></div></div>';
+   $('pdf-prev').onclick=()=>goPage(state.pdfPage-1);$('pdf-next').onclick=()=>goPage(state.pdfPage+1);
+   $('pdf-page').onchange=()=>goPage(Number($('pdf-page').value));
+   $('pdf-zoom').onchange=()=>{state.pdfScale=Number($('pdf-zoom').value);drawPdf();};
+   $('pdf-full').onclick=()=>{$('reader-host').requestFullscreen?.();};
+   $('pdf-find-btn').onclick=searchPdf;
+   $('pdf-find').onkeydown=e=>{if(e.key==='Enter')searchPdf();};
+   $('save-note').onclick=savePdfNote;
+   await loadPdfNotes(r.id);await drawPdf();
+  }else if(blob.type.startsWith('image/')){
+   state.pdfBlobUrl=URL.createObjectURL(blob);
+   host.innerHTML='<img alt="'+esc(r.file_name)+'" src="'+state.pdfBlobUrl+'" style="display:block;max-width:100%;max-height:75vh;margin:auto">';
+  }else{
+   host.innerHTML='<div style="padding:20px;text-align:center">📄 '+esc(r.file_name||'첨부파일')+'<br><small>이 파일 형식은 브라우저 미리보기를 지원하지 않습니다. 다운로드 승인을 신청하세요.</small></div>';
+  }
+ }catch(e){console.error(e);if($('reader-host'))$('reader-host').textContent='미리보기를 불러오지 못했습니다: '+errText(e);}
+}
+async function drawPdf(){
+ if(!state.pdf||!$('pdf-canvas'))return;
+ const pg=await state.pdf.getPage(state.pdfPage);const viewport=pg.getViewport({scale:state.pdfScale});
+ const canvas=$('pdf-canvas');const ctx=canvas.getContext('2d');const dpr=Math.min(devicePixelRatio||1,2);
+ canvas.width=Math.floor(viewport.width*dpr);canvas.height=Math.floor(viewport.height*dpr);
+ canvas.style.width=Math.floor(viewport.width)+'px';canvas.style.height=Math.floor(viewport.height)+'px';
+ await pg.render({canvasContext:ctx,viewport:pg.getViewport({scale:state.pdfScale*dpr})}).promise;
+ if($('pdf-page'))$('pdf-page').value=state.pdfPage;
+ if($('note-page'))$('note-page').textContent='현재 '+state.pdfPage+'쪽';
+ const n=state.notes.find(x=>x.page_number===state.pdfPage);
+ if($('pdf-note'))$('pdf-note').value=n?.note||'';
+ if($('pdf-bookmark'))$('pdf-bookmark').checked=n?.bookmarked||false;
+ localStorage.setItem('hub-pdf-'+state.current.id+'-'+state.user?.id,String(state.pdfPage));
+}
+function goPage(n){if(!state.pdf||!Number.isFinite(n))return;state.pdfPage=Math.min(state.pdf.numPages,Math.max(1,Math.round(n)));drawPdf();}
+async function searchPdf(){
+ const text=$('pdf-find')?.value.trim().toLowerCase();if(!text||!state.pdf)return;
+ $('pdf-search-status').textContent='전체 페이지를 검색하고 있습니다...';
+ for(let i=0;i<state.pdf.numPages;i++){
+  const n=(state.pdfPage+i)%state.pdf.numPages+1;
+  const pg=await state.pdf.getPage(n);const c=await pg.getTextContent();
+  const all=c.items.map(x=>x.str||'').join(' ').toLowerCase();
+  if(all.includes(text)){goPage(n);$('pdf-search-status').textContent=n+'쪽에서 검색어를 찾았습니다. (원문 내 위치 강조는 미지원)';return;}
+ }
+ $('pdf-search-status').textContent='일치하는 텍스트를 찾지 못했습니다. 스캔 이미지 PDF는 검색되지 않을 수 있습니다.';
+}
+async function loadPdfNotes(id){
+ const v=await sb.from('hub_page_notes').select('*').eq('resource_id',id).eq('user_id',state.user.id);
+ state.notes=v.data||[];renderBookmarks();
+}
+function renderBookmarks(){
+ const host=$('bookmark-list');if(!host)return;
+ const list=state.notes.filter(x=>x.bookmarked).sort((a,b)=>a.page_number-b.page_number);
+ host.innerHTML='<strong style="font-size:13px">책갈피 ('+list.length+')</strong><div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">'+list.map(x=>'<button class="btn sm" data-page="'+x.page_number+'">'+x.page_number+'쪽</button>').join('')+'</div>';
+ host.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>goPage(Number(b.dataset.page)));
+}
+async function savePdfNote(){
+ if(!state.user)return toast('로그인이 필요합니다.',true);
+ const data={user_id:state.user.id,resource_id:state.current.id,page_number:state.pdfPage,note:$('pdf-note').value,bookmarked:$('pdf-bookmark').checked,updated_at:new Date().toISOString()};
+ const r=await sb.from('hub_page_notes').upsert(data,{onConflict:'user_id,resource_id,page_number'});
+ if(r.error)return toast(errText(r.error),true);
+ await loadPdfNotes(state.current.id);toast('페이지별 메모를 저장했습니다.');
+}
+async function displayRequestStatus(r){
+ if(!state.user||!r.file_path)return;
+ if(state.admin||isOwner(r)){$('request-status').textContent='작성자·관리자는 다운로드 승인이 필요하지 않습니다.';return;}
+ let out=await sb.from('hub_download_requests').select('status').eq('resource_id',r.id).eq('requester_id',state.user.id).maybeSingle();
+ $('request-status').textContent=out.data?.status==='approved'?'관리자가 다운로드를 승인했습니다.':out.data?.status==='pending'?'다운로드 승인 대기 중입니다.':out.data?.status==='rejected'?'다운로드 요청이 반려되었습니다.':'다운로드하려면 관리자 승인이 필요합니다.';
+}
+async function downloadRequested(r){
+ if(!state.user)return toast('로그인이 필요합니다.',true);
+ if(state.admin||isOwner(r))return actualDownload(r);
+ const req=await sb.from('hub_download_requests').select('status').eq('resource_id',r.id).eq('requester_id',state.user.id).maybeSingle();
+ if(req.error)return toast(errText(req.error),true);
+ if(req.data?.status==='approved')return actualDownload(r);
+ if(req.data?.status==='pending')return toast('관리자의 승인을 기다리고 있습니다.');
+ if(req.data?.status==='rejected')return toast('이 자료의 다운로드는 승인되지 않았습니다.',true);
+ const add=await sb.from('hub_download_requests').insert({resource_id:r.id,requester_id:state.user.id});
+ if(add.error)return toast(errText(add.error),true);
+ await displayRequestStatus(r);toast('관리자에게 다운로드 승인 요청을 보냈습니다.');
+}
+async function actualDownload(r){
+ const out=await sb.storage.from(BUCKET).download(r.file_path);
+ if(out.error)return toast(errText(out.error),true);
+ const url=URL.createObjectURL(out.data),a=document.createElement('a');
+ a.href=url;a.download=r.file_name||'자료';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),6000);
+}
+function editor(r=null){
+ if(!state.user){toast('게스트 로그인 설정 후 등록할 수 있습니다.',true);return;}
+ state.editor=r;show('editor');const p=r||{space:state.space,kind:'document',category:CATEGORIES[state.space][0],visibility:'public',title:'',summary:'',body:'',subject:'',grade:'',tags:[],external_url:'',author_name:state.guest?'게스트':state.user.user_metadata?.name||state.user.email||'작성자'};
+ let sp=p.space;const guestPost=!!r&&(state.guest||(!state.admin&&!isOwner(r)));const askPass=state.guest||guestPost;
+ $('editor-view').innerHTML='<div class="panel"><div class="detail-head"><button class="btn sm" id="edit-back">← 돌아가기</button><span class="type">'+(r?'자료 수정':'새 자료 등록')+'</span></div><h2 style="margin-top:19px">'+(r?'자료 수정하기':'함께 나누고 싶은 자료 등록하기')+'</h2>'+
+ '<p class="muted">학교 자료실과 개인 아카이브에 PDF, 문서, 시뮬레이터 링크, 수업자료를 올릴 수 있습니다.</p><form id="resource-form"><div class="formgrid">'+
+ field('공간','<select id="f-space"><option value="school" '+(sp==='school'?'selected':'')+'>학교 자료실</option><option value="personal" '+(sp==='personal'?'selected':'')+'>개인 아카이브</option></select>')+
+ field('자료 유형','<select id="f-kind">'+Object.entries(TYPES).map(([k,v])=>'<option value="'+k+'" '+(p.kind===k?'selected':'')+'>'+v+'</option>').join('')+'</select>')+
+ field('분류','<select id="f-category"></select>')+
+ field('작성자 표시 이름','<input id="f-author" type="text" maxlength="80" required value="'+esc(p.author_name)+'">')+
+ field('제목 *','<input id="f-title" type="text" required maxlength="160" value="'+esc(p.title)+'">','full')+
+ field('간단한 소개','<textarea id="f-summary" maxlength="1500">'+esc(p.summary)+'</textarea>','full')+
+ field('과목 / 주제','<input id="f-subject" type="text" maxlength="80" value="'+esc(p.subject)+'">')+
+ field('학년 / 대상','<input id="f-grade" type="text" maxlength="40" value="'+esc(p.grade)+'">')+
+ field('태그 (쉼표로 구분)','<input id="f-tags" type="text" value="'+esc((p.tags||[]).join(', '))+'">','full')+
+ field('본문 / 학습 안내','<textarea id="f-body" style="min-height:160px" maxlength="50000">'+esc(p.body)+'</textarea>','full')+
+ field('웹사이트 / 시뮬레이터 주소','<input id="f-url" type="url" placeholder="https://..." value="'+esc(p.external_url)+'">','full')+
+ field('PDF 및 첨부파일 (최대 50MB)','<input id="f-file" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.docx,.pptx,.xlsx,.zip,.mp4"> <small>'+(r?.file_name?'현재 파일: '+esc(r.file_name):'PDF는 웹교과서 형태로 바로 열 수 있습니다.')+'</small>','full')+
+ field('공개 설정','<select id="f-visibility"><option value="public" '+(p.visibility==='public'?'selected':'')+'>모두에게 공개</option>'+(state.guest?'':'<option value="private" '+(p.visibility==='private'?'selected':'')+'>나만 보기 (비공개)</option>')+'</select>')+
+ (askPass?field(r?'게시물 비밀번호 (수정 인증) *':'게시물 비밀번호 (8자 이상) *','<input id="f-password" type="password" minlength="8" maxlength="100" required autocomplete="new-password"><small>게스트는 로그인 없이 이 비밀번호로 수정·삭제합니다. 꼭 기억해 주세요.</small>'):'')+
+ '</div><div class="form-actions"><button type="button" class="btn" id="cancel-edit">취소</button><button type="submit" id="submit-resource" class="btn primary">'+(r?'변경 저장':'자료 게시')+'</button></div></form></div>';
+ function updateCategory(){const space=$('f-space').value,selected=p.category;let list=CATEGORIES[space];if(selected&&!list.includes(selected))list=[...list,selected];$('f-category').innerHTML=list.map(c=>'<option '+(c===selected?'selected':'')+'>'+esc(c)+'</option>').join('');}
+ updateCategory();$('f-space').onchange=()=>{state.editor=null;const chosen=CATEGORIES[$('f-space').value][0];$('f-category').innerHTML=CATEGORIES[$('f-space').value].map((c,i)=>'<option '+(i===0?'selected':'')+'>'+esc(c)+'</option>').join('');};
+ $('edit-back').onclick=()=>r?detail(r.id):renderBrowse();$('cancel-edit').onclick=()=>r?detail(r.id):renderBrowse();
+ $('resource-form').onsubmit=e=>{e.preventDefault();saveResource(r);};
+}
+function field(label,control,cls=''){return '<div class="field '+cls+'"><label>'+label+'</label>'+control+'</div>';}
+async function uploadResourceFile(id,file){
+ if(file.size>52428800)throw new Error('첨부파일은 최대 50MB입니다.');
+ const allowed=['pdf','png','jpg','jpeg','webp','txt','docx','pptx','xlsx','zip','mp4'];
+ const ext=file.name.split('.').pop().toLowerCase();if(!allowed.includes(ext))throw new Error('지원하지 않는 파일 형식입니다.');
+ const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-80);
+ const path=state.user.id+'/'+id+'/'+Date.now()+'_'+safeName;
+ const res=await sb.storage.from(BUCKET).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});
+ if(res.error)throw res.error;
+ return {file_path:path,file_name:file.name,file_mime:file.type||'application/octet-stream',file_size:file.size};
+}
+async function saveResource(r){
+ if(state.saving)return;
+ const title=$('f-title').value.trim(),url=$('f-url').value.trim(),password=$('f-password')?.value||'';
+ if(!title)return toast('제목을 입력하세요.',true);if(url&&!safeHttp(url))return toast('http 또는 https 주소만 허용합니다.',true);
+ const file=$('f-file').files[0];if(file&&file.size>52428800)return toast('파일은 50MB 이하만 등록할 수 있습니다.',true);
+ const data={space:$('f-space').value,kind:$('f-kind').value,category:$('f-category').value,title,summary:$('f-summary').value,body:$('f-body').value,subject:$('f-subject').value,grade:$('f-grade').value,tags:$('f-tags').value.split(',').map(s=>s.trim()).filter(Boolean).slice(0,15),external_url:url||null,visibility:$('f-visibility').value,author_name:$('f-author').value.trim()||'게스트'};
+ const guestEdit=!!r&&!state.admin&&(state.guest||!isOwner(r));
+ state.saving=true;$('submit-resource').disabled=true;$('submit-resource').textContent='저장 중...';
+ try{
+  let id=r?.id;
+  if(!r){
+   if(state.guest){
+    const o=await sb.rpc('hub_guest_create',{p_space:data.space,p_kind:data.kind,p_category:data.category,p_title:data.title,p_summary:data.summary,p_body:data.body,p_subject:data.subject,p_grade:data.grade,p_tags:data.tags,p_external_url:data.external_url,p_visibility:'public',p_author_name:data.author_name,p_password:password});
+    if(o.error)throw o.error;id=o.data;
+   }else{
+    const o=await sb.from('hub_resources').insert({...data,author_id:state.user.id}).select('id').single();
+    if(o.error)throw o.error;id=o.data.id;
+   }
+  }else if(guestEdit){
+   const o=await sb.rpc('hub_guest_edit',{p_id:r.id,p_password:password,p_space:data.space,p_kind:data.kind,p_category:data.category,p_title:data.title,p_summary:data.summary,p_body:data.body,p_subject:data.subject,p_grade:data.grade,p_tags:data.tags,p_external_url:data.external_url,p_visibility:'public',p_author_name:data.author_name});
+   if(o.error)throw o.error;if(!o.data?.ok)throw Error(o.data?.error||'비밀번호 인증에 실패했습니다.');
+  }else{
+   const o=await sb.from('hub_resources').update(data).eq('id',r.id);
+   if(o.error)throw o.error;
+  }
+  if(file){
+   // Guest replacement works only while retaining the original anonymous session.
+   const uploaded=await uploadResourceFile(id,file);
+   if(state.guest||guestEdit){
+    const o=await sb.rpc('hub_guest_edit',{p_id:id,p_password:password,p_space:data.space,p_kind:data.kind,p_category:data.category,p_title:data.title,p_summary:data.summary,p_body:data.body,p_subject:data.subject,p_grade:data.grade,p_tags:data.tags,p_external_url:data.external_url,p_visibility:'public',p_author_name:data.author_name,...Object.fromEntries(Object.entries(uploaded).map(([k,v])=>['p_'+k,v]))});
+    if(o.error||!o.data?.ok)throw o.error||Error(o.data?.error||'파일 연결 실패');
+   }else{
+    const o=await sb.from('hub_resources').update(uploaded).eq('id',id);
+    if(o.error)throw o.error;
+   }
+  }
+  await load();state.mode='all';state.space=data.space;setSpaceUI();renderBrowse();toast('자료가 저장되었습니다.'+(file?' 첨부파일까지 연결했습니다.':''));
+ }catch(e){toast('저장 실패: '+errText(e),true);console.error(e);}
+ finally{state.saving=false;if($('submit-resource')){$('submit-resource').disabled=false;$('submit-resource').textContent=r?'변경 저장':'자료 게시';}}
+}
+async function deleteResource(r){
+ if(state.admin||(!state.guest&&isOwner(r))){
+  if(!confirm('정말 삭제하시겠습니까? 삭제된 자료와 메모는 복구할 수 없습니다.'))return;
+  const v=await sb.from('hub_resources').delete().eq('id',r.id);if(v.error)return toast(errText(v.error),true);
+  await load();renderBrowse();return toast('게시물을 삭제했습니다.');
+ }
+ modal('<h2>게시물 삭제</h2><p class="muted">등록 시 입력한 게시물 비밀번호가 필요합니다.</p><input type="password" id="delete-password" placeholder="게시물 비밀번호"><div class="form-actions"><button class="btn" id="modal-cancel">취소</button><button class="btn danger" id="modal-delete">삭제</button></div>');
+ $('modal-cancel').onclick=closeModal;
+ $('modal-delete').onclick=async()=>{
+  if(!confirm('정말 삭제할까요?'))return;
+  const res=await sb.rpc('hub_guest_delete',{p_id:r.id,p_password:$('delete-password').value});
+  if(res.error||!res.data?.ok)return toast(res.data?.error||errText(res.error),true);
+  closeModal();await load();renderBrowse();toast('삭제했습니다.');
+ };
+}
+async function adminPanel(){
+ if(!state.admin)return toast('관리자 전용 기능입니다.',true);
+ show('admin');$('admin-view').innerHTML='<div class="panel"><div class="detail-head"><button class="btn" id="admin-back">← 목록으로</button><span class="type">관리자</span></div><h2 style="margin-top:20px">다운로드 승인 관리</h2><p class="muted">요청자는 관리자의 승인 후 사이트 다운로드 버튼을 사용할 수 있습니다.</p><div id="admin-requests" class="notice">승인 요청을 불러오고 있습니다.</div><div class="notice warn">다운로드 버튼을 승인제로 관리하더라도 PDF를 볼 수 있는 사람의 브라우저 데이터 추출을 완전히 차단할 수는 없습니다.</div></div>';
+ $('admin-back').onclick=renderBrowse;
+ let q=await sb.from('hub_download_requests').select('id,resource_id,requester_id,status,created_at').order('created_at',{ascending:false});
+ if(q.error){$('admin-requests').textContent=errText(q.error);return;}
+ $('admin-requests').innerHTML=q.data.length?q.data.map(x=>{
+  const r=state.items.find(v=>v.id===x.resource_id);
+  return '<div style="padding:14px 0;border-bottom:1px solid #d6e3eb"><strong>'+esc(r?.title||'삭제된 자료')+'</strong><div class="muted">요청자 ID: '+esc(x.requester_id.slice(0,8))+'… · '+fmt(x.created_at)+' · '+esc(x.status)+'</div>'+
+  (x.status==='pending'?'<div style="display:flex;gap:6px;margin-top:9px"><button class="btn primary sm" data-approve="'+x.id+'">승인</button><button class="btn danger sm" data-reject="'+x.id+'">반려</button></div>':'')+'</div>';
+ }).join(''):'아직 다운로드 요청이 없습니다.';
+ $('admin-requests').querySelectorAll('[data-approve],[data-reject]').forEach(b=>b.onclick=async()=>{
+  const id=b.dataset.approve||b.dataset.reject,status=b.dataset.approve?'approved':'rejected';
+  const o=await sb.from('hub_download_requests').update({status,decided_at:new Date().toISOString()}).eq('id',id);
+  if(o.error)return toast(errText(o.error),true);toast(status==='approved'?'승인했습니다.':'반려했습니다.');adminPanel();
+ });
+}
+async function start(){
+ setSpaceUI();show('browse');
+ await syncAuth();await load();
+ const params=new URLSearchParams(location.search);
+ const id=params.get('resource');if(id&&state.items.some(x=>x.id===id))detail(id);
+}
+start().catch(e=>toast('초기화 실패: '+errText(e),true));
+</script>
+</body></html>
