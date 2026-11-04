@@ -277,12 +277,6 @@ begin
 end
 $$;
 
-revoke all on function public.hub_guest_create(text,text,text,text,text,text,text,text,text[],text,text,text,text) from public,anon;
-revoke all on function public.hub_guest_edit(uuid,text,text,text,text,text,text,text,text,text,text[],text,text,text,text,text,text,bigint) from public,anon;
-revoke all on function public.hub_guest_delete(uuid,text) from public,anon;
-grant execute on function public.hub_guest_create(text,text,text,text,text,text,text,text,text[],text,text,text,text,text) to authenticated;
-grant execute on function public.hub_guest_edit(uuid,text,text,text,text,text,text,text,text,text,text[],text,text,text,text,text,text,text,bigint) to authenticated;
-grant execute on function public.hub_guest_delete(uuid,text) to authenticated;
 
 insert into storage.buckets(id,name,public,file_size_limit)
 values('hub-private-files','hub-private-files',false,52428800)
@@ -321,3 +315,14 @@ grant select,insert,update,delete on public.hub_resources to authenticated;
 grant select,insert,update,delete on public.hub_download_requests to authenticated;
 grant select,insert,update,delete on public.hub_favorites to authenticated;
 grant select,insert,update,delete on public.hub_page_notes to authenticated;
+
+-- Restrict exact overloads without fragile positional signature transcription.
+do $block$
+declare fn regprocedure;
+begin
+ for fn in select p.oid::regprocedure from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+   where n.nspname='public' and p.proname in ('hub_guest_create','hub_guest_edit','hub_guest_delete') loop
+   execute format('revoke all on function %s from public, anon',fn);
+   execute format('grant execute on function %s to authenticated',fn);
+ end loop;
+end $block$;
