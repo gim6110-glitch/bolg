@@ -95,7 +95,7 @@ const SUPABASE_URL='https://izmumegfqvsorzkkixfi.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_VtcZMVNqZ4nFsqwfHP9Lxg_PvXZD3Fd';
 const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const BUCKET='hub-private-files';
-const RESOURCE_COLUMNS='id,space,kind,category,title,summary,body,subject,grade,tags,external_url,file_path,file_name,file_mime,file_size,visibility,status,author_id,author_name,created_at,updated_at';
+const RESOURCE_COLUMNS='id,space,kind,category,title,summary,body,subject,grade,tags,external_url,file_path,file_name,file_mime,file_size,visibility,status,author_id,author_name,guest_protected,created_at,updated_at';
 const TYPES={document:'📖 문서·교과서',simulator:'🧪 시뮬레이터',link:'🔗 웹 링크',video:'▶ 영상',note:'📝 학습 자료'};
 const CATEGORIES={school:['기계설계·CAD','3D프린팅','제조 AI·SW','반도체·공정','정보·데이터','AI융합교육','연수·수업자료','기타'],personal:['일상·기록','자료·문서','유틸리티','프로젝트','생활정보','여행','기타']};
 const state={space:'school',user:null,admin:false,guest:true,items:[],filter:'',mode:'all',view:'browse',current:null,editor:null,pdf:null,pdfPage:1,pdfScale:1.2,pdfBlobUrl:null,notes:[],requests:[],favoriteIds:new Set(),saving:false};
@@ -109,7 +109,7 @@ function modal(html){$('modal-content').innerHTML=html;$('modal-bg').hidden=fals
 function closeModal(){$('modal-bg').hidden=true;$('modal-content').innerHTML='';}
 $('modal-bg').addEventListener('click',e=>{if(e.target===$('modal-bg'))closeModal();});
 function isOwner(r){return !!state.user && state.user.id===r.author_id;}
-function canEdit(r){return state.admin||(!state.guest&&isOwner(r))||!!r.guest_password_hash;}
+function canEdit(r){return state.admin||(!state.guest&&isOwner(r))||!!r.guest_protected;}
 function safeHttp(url){try{let u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
 async function syncAuth(){
  const {data:{session}}=await sb.auth.getSession();state.user=session?.user||null;
@@ -307,7 +307,7 @@ async function actualDownload(r){
 function editor(r=null){
  if(!state.user){toast('게스트 로그인 설정 후 등록할 수 있습니다.',true);return;}
  state.editor=r;show('editor');const p=r||{space:state.space,kind:'document',category:CATEGORIES[state.space][0],visibility:'public',title:'',summary:'',body:'',subject:'',grade:'',tags:[],external_url:'',author_name:state.guest?'게스트':state.user.user_metadata?.name||state.user.email||'작성자'};
- let sp=p.space;const guestPost=!!r&&(state.guest||(!state.admin&&!isOwner(r)));const askPass=state.guest||guestPost;
+ let sp=p.space;const guestPost=!!r&&r.guest_protected&&!state.admin;const askPass=guestPost||(state.guest&&!state.admin);
  $('editor-view').innerHTML='<div class="panel"><div class="detail-head"><button class="btn sm" id="edit-back">← 돌아가기</button><span class="type">'+(r?'자료 수정':'새 자료 등록')+'</span></div><h2 style="margin-top:19px">'+(r?'자료 수정하기':'함께 나누고 싶은 자료 등록하기')+'</h2>'+
  '<p class="muted">학교 자료실과 개인 아카이브에 PDF, 문서, 시뮬레이터 링크, 수업자료를 올릴 수 있습니다.</p><form id="resource-form"><div class="formgrid">'+
  field('공간','<select id="f-space"><option value="school" '+(sp==='school'?'selected':'')+'>학교 자료실</option><option value="personal" '+(sp==='personal'?'selected':'')+'>개인 아카이브</option></select>')+
@@ -347,7 +347,7 @@ async function saveResource(r){
  if(!title)return toast('제목을 입력하세요.',true);if(url&&!safeHttp(url))return toast('http 또는 https 주소만 허용합니다.',true);
  const file=$('f-file').files[0];if(file&&file.size>52428800)return toast('파일은 50MB 이하만 등록할 수 있습니다.',true);
  const data={space:$('f-space').value,kind:$('f-kind').value,category:$('f-category').value,title,summary:$('f-summary').value,body:$('f-body').value,subject:$('f-subject').value,grade:$('f-grade').value,tags:$('f-tags').value.split(',').map(s=>s.trim()).filter(Boolean).slice(0,15),external_url:url||null,visibility:$('f-visibility').value,author_name:$('f-author').value.trim()||'게스트'};
- const guestEdit=!!r&&!state.admin&&(state.guest||!isOwner(r));
+ const guestEdit=!!r&&!state.admin&&r.guest_protected;
  state.saving=true;$('submit-resource').disabled=true;$('submit-resource').textContent='저장 중...';
  try{
   let id=r?.id;
@@ -369,7 +369,7 @@ async function saveResource(r){
   if(file){
    // Guest replacement works only while retaining the original anonymous session.
    const uploaded=await uploadResourceFile(id,file);
-   if(state.guest||guestEdit){
+   if(guestEdit||(state.guest&&!state.admin)){
     const o=await sb.rpc('hub_guest_edit',{p_id:id,p_password:password,p_space:data.space,p_kind:data.kind,p_category:data.category,p_title:data.title,p_summary:data.summary,p_body:data.body,p_subject:data.subject,p_grade:data.grade,p_tags:data.tags,p_external_url:data.external_url,p_visibility:'public',p_author_name:data.author_name,...Object.fromEntries(Object.entries(uploaded).map(([k,v])=>['p_'+k,v]))});
     if(o.error||!o.data?.ok)throw o.error||Error(o.data?.error||'파일 연결 실패');
    }else{
@@ -382,7 +382,7 @@ async function saveResource(r){
  finally{state.saving=false;if($('submit-resource')){$('submit-resource').disabled=false;$('submit-resource').textContent=r?'변경 저장':'자료 게시';}}
 }
 async function deleteResource(r){
- if(state.admin||(!state.guest&&isOwner(r))){
+ if(state.admin||(!state.guest&&isOwner(r)&&!r.guest_protected)){
   if(!confirm('정말 삭제하시겠습니까? 삭제된 자료와 메모는 복구할 수 없습니다.'))return;
   const v=await sb.from('hub_resources').delete().eq('id',r.id);if(v.error)return toast(errText(v.error),true);
   await load();renderBrowse();return toast('게시물을 삭제했습니다.');
