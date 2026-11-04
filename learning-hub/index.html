@@ -180,8 +180,8 @@ async function detail(id){
  const r=state.items.find(x=>x.id===id);if(!r){toast('자료를 찾을 수 없습니다.',true);return;}
  if(state.current?.id!==id){clearPdf();state.pdfPage=1;}
  state.current=r;show('detail');
- const preview=r.file_path?(r.file_mime==='application/pdf'?'<div class="reader"><div id="reader-host">PDF를 준비하고 있습니다...</div></div>':'<div class="reader"><div id="reader-host">파일 미리보기 준비 중...</div></div>'):
- (r.external_url?'<div class="reader"><p style="text-align:center">연결된 웹사이트</p><div style="background:white;border-radius:9px;padding:12px;color:#193c50;overflow-wrap:anywhere">'+esc(r.external_url)+'</div></div>':'');
+ const preview=r.file_path?(r.file_mime='application/pdf'?'<div class="reader"><div id="reader-host">PDF를 준비하고 있습니다...</div></div>':'<div class="reader"><div id="reader-host">파일 미리보기 준비 중...</div></div>'):
+ (r.external_url?(r.kind==='simulator'?'<div class="reader"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 2px 12px"><strong>🧪 웹 시뮬레이터</strong><span style="font-size:12px;color:#cfe2eb">외부 페이지가 보안상 삽입을 차단할 수 있습니다.</span></div><iframe title="시뮬레이터: '+esc(r.title)+'" src="'+esc(safeHttp(r.external_url)||'about:blank')+'" sandbox="allow-scripts allow-forms allow-popups" referrerpolicy="no-referrer" style="border:0;background:#fff;border-radius:8px;width:100%;height:min(70vh,680px)"></iframe></div>':'<div class="reader"><p style="text-align:center">연결된 웹사이트</p><div style="background:white;border-radius:9px;padding:12px;color:#193c50;overflow-wrap:anywhere">'+esc(r.external_url)+'</div></div>'):'');
  $('detail-view').innerHTML='<div class="panel"><div class="detail-head"><button class="btn sm" id="go-back">← 목록</button><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" id="fav-detail">'+(state.favoriteIds.has(id)?'★ 즐겨찾기':'☆ 즐겨찾기')+'</button>'+
  (canEdit(r)?'<button class="btn sm" id="edit-detail">✎ 수정</button><button class="btn danger sm" id="del-detail">삭제</button>':'')+'</div></div>'+
  '<h2>'+esc(r.title)+'</h2><p class="muted">'+esc(r.category)+' · '+esc(r.author_name)+' · '+fmt(r.created_at)+(r.subject?' · '+esc(r.subject):'')+(r.grade?' · '+esc(r.grade):'')+'</p>'+
@@ -195,6 +195,7 @@ async function detail(id){
  '</div><div id="request-status" class="muted" style="margin-top:12px"></div>'+
  '<p class="muted" style="margin-top:18px">※ 문서 열람 기능과 다운로드 승인은 별개입니다. 열람 가능한 PDF의 화면 캡처 및 복사를 완전히 방지할 수는 없습니다.</p></div>';
  $('go-back').onclick=()=>{clearPdf();renderBrowse();};$('fav-detail').onclick=()=>favorite(id);
+ $('share-detail').onclick=async()=>{const u=new URL(location.href);u.searchParams.set('resource',r.id);try{await navigator.clipboard.writeText(u.href);toast('공유 링크를 복사했습니다.');}catch{modal('<h2>공유 링크</h2><input type="text" readonly value="'+esc(u.href)+'"><div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-bg\').hidden=true">닫기</button></div>');}};
  if($('edit-detail'))$('edit-detail').onclick=()=>editor(r);
  if($('del-detail'))$('del-detail').onclick=()=>deleteResource(r);
  if($('open-external'))$('open-external').onclick=()=>{const u=safeHttp(r.external_url);if(u)window.open(u,'_blank','noopener,noreferrer');};
