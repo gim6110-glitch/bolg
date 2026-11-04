@@ -1,0 +1,11 @@
+# Separate Netlify site: set Package directory to learning-hub, Base directory empty.
+# This config is discovered before the root netlify.toml when package directory is set.
+[build]
+  publish = "learning-hub"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
